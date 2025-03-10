@@ -34,6 +34,7 @@ FILE_PATTERNS = [
 def main(
     target_directory,
     archive_name=None,
+    out_dir=os.getcwd(),
     debug=False,
 ):
     log.basicConfig(
@@ -66,6 +67,9 @@ def main(
 
     # Where the open archives will go
     outpath = "prepared_archives"
+
+    # concatenate the out_dir to the outpath
+    outpath = Path(out_dir, outpath)
     if Path(outpath).exists():
         log.debug("'prepared_archives' directory already exists")
     else:
@@ -151,10 +155,16 @@ if __name__ == "__main__":
         ),
     )
     parser.add_argument("archive_name", help="process single archive only")
+    parser.add_argument(
+        "-o",
+        "--out_dir",
+        help="Name of directory to store the prepared archives",
+    )
     parser.add_argument("-d", "--debug", action="store_true", help="DEBUG logging")
     args = parser.parse_args()
     main(
         args.target_directory,
         args.archive_name,
+        args.out_dir,
         args.debug,
     )
