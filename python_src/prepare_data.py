@@ -96,7 +96,7 @@ def main(
         else:
             # Open the archive
             log.info(f"Opening archive {tarball_file}")
-            open_archive(tarball_file, bzip2_program)
+            open_archive(tarball_file, bzip2_program, outpath)
 
         # Compress the sequence archive files
         log.info(f"Compressing sequence files for {run_id}")

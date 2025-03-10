@@ -30,11 +30,13 @@ def find_bzip2():
     return bzip2_program
 
 
-def open_archive(tarball_file, bzip2_program):
+def open_archive(tarball_file, bzip2_program, outpath=None):
     """
     You are expected to be in the dir with the tarball when calling this function
     """
     # Create temp dir in which to untar archives
+    if outpath is not None:
+        os.chdir(outpath)
     try:
         Path("temp").mkdir(exist_ok=False)
     except FileExistsError as e:
