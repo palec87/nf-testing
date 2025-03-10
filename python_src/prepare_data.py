@@ -132,9 +132,9 @@ def main(
         # Move the compressed files to the open-compressed-samples directory
         log.debug(f"Moving to {target_directory}")
         os.chdir(target_directory)
-        log.info(f"Moving compressed files to '{outpath}'")
-        log.debug(f"Moving {run_id} to {oca_dir}")
-        Path(run_id).rename(oca_dir)
+        # log.info(f"Moving compressed files to '{outpath}'")
+        # log.debug(f"Moving {run_id} to {oca_dir}")
+        # Path(run_id).rename(oca_dir)
 
     # CD back to home directory
     log.info(f"Changing directory to {home_dir}")
