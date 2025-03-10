@@ -69,7 +69,7 @@ def main(
     outpath = "prepared_archives"
 
     # concatenate the out_dir to the outpath
-    outpath = Path(out_dir, outpath)
+    outpath = os.path.join(out_dir, outpath)
     if Path(outpath).exists():
         log.debug("'prepared_archives' directory already exists")
     else:
