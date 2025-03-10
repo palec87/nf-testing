@@ -69,6 +69,7 @@ def main(
     outpath = "prepared_archives"
 
     # concatenate the out_dir to the outpath
+    log.info(f"Creating prepared archives in {out_dir} / {outpath}")
     outpath = os.path.join(out_dir, outpath)
     if Path(outpath).exists():
         log.debug("'prepared_archives' directory already exists")
