@@ -33,6 +33,7 @@ FILE_PATTERNS = [
 
 def main(
     target_directory,
+    archive_name=None,
     debug=False,
 ):
     log.basicConfig(
@@ -72,6 +73,9 @@ def main(
         Path(outpath).mkdir()
 
     bzip2_program = find_bzip2()
+
+    if archive_name:
+        tarball_files = [archive_name]
 
     # Loop through the tarball files
     for tarball_file in tarball_files:
@@ -146,9 +150,11 @@ if __name__ == "__main__":
             " archives to prepare relative to the current working directory"
         ),
     )
+    parser.add_argument("archive_name", help="process single archive only")
     parser.add_argument("-d", "--debug", action="store_true", help="DEBUG logging")
     args = parser.parse_args()
     main(
         args.target_directory,
+        args.archive_name,
         args.debug,
     )
