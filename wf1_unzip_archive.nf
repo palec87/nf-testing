@@ -16,7 +16,7 @@ process unzipArchive {
     val file_path
 
     output:
-    path 'unzip_*'
+    path 'prepared_archives/*'
     
     script:
     // """
