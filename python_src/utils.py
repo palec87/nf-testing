@@ -58,7 +58,7 @@ def open_archive(tarball_file, bzip2_program, outpath=None):
         ]
     )
     # Check archive
-    run_id = Path(str(tarball_file).rsplit(".", 2)[0])
+    run_id = Path(str(tarball_file).split('/')[-1].rsplit(".", 2)[0])
     log.debug(f"run_id = {run_id}")
     if run_id.exists():
         os.chdir("..")
