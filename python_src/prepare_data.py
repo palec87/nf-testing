@@ -160,6 +160,7 @@ if __name__ == "__main__":
         "-o",
         "--out_dir",
         help="Name of directory to store the prepared archives",
+        default=os.getcwd(),
     )
     parser.add_argument("-d", "--debug", action="store_true", help="DEBUG logging")
     args = parser.parse_args()
