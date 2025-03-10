@@ -20,7 +20,7 @@ process unzipArchive {
     """
     for archive in ${archive_list}
     do
-        python ${python_path} ${archives_root} $archive -d
+        python ${python_path} ${archives_root} \${archive} -d
     done
     """
     // python ${python_path}/prepare_data.py ${archives_root} ${archive} -d
