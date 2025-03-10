@@ -54,7 +54,7 @@ def open_archive(tarball_file, bzip2_program, outpath=None):
             "--use-compress-program",
             f"{bzip2_program}",
             "-xf",
-            f"../{tarball_file}",
+            f"{tarball_file}",
         ]
     )
     # Check archive
