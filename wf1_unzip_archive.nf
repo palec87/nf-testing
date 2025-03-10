@@ -2,7 +2,7 @@
 
 // Default parameter input
 params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"
-params.archive_list = ("HMNJKDSX3.UDI244.tar.bz2")
+// params.archive_list = ("HMNJKDSX3.UDI244.tar.bz2")
 params.file_path = "HMNJKDSX3.UDI244.tar.bz2"
 // unzipArchive process
 
