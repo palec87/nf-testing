@@ -3,7 +3,7 @@
 "datePublished": "None"
 
 #Run name: this is the value of "-n" to the "run_wf.sh" script
-"run_parameter": "HMNJKDSX3.UDI244"
+"run_parameter": "run"
 
 #Missing files - if a mandatory file is missing, but you still want to build a
 #ro-crate, specify file paths here as a list of strings:

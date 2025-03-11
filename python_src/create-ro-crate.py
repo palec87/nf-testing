@@ -485,9 +485,9 @@ def check_and_format_data_file_paths(target_directory, conf, check_exists=True):
     filepaths = [f.format(**conf) for f in MANDATORY_FILES]
     if check_exists:
         path = Path(target_directory, workflow_yaml_path)
-        log.debug("Looking for worflow YAML file at: %s" % path)
+        log.debug(f"Looking for worflow YAML file at: {path}")
         if not os.path.exists(path):
-            log.error("Cannot find workflow YAML file at %s" % path)
+            log.error(f"Cannot find workflow YAML file at {path}")
             sys.exit()
         else:
             MANDATORY_FILES.append(workflow_yaml_path)
