@@ -8,6 +8,4 @@ dependencies:
   - pandas
   - pyyaml
   - requests
-  - shutil
-  - urlib
   - yaml=0.2.5

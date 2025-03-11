@@ -11,7 +11,6 @@ import datetime
 import re
 import requests
 import shutil
-import urllib
 import glob
 import subprocess
 import logging as log
@@ -564,7 +563,7 @@ def get_creator_and_mgf_version_information(conf, overide_error=False):
     # Read the relevant row in sample sheet
     try:
         df_samp = pd.read_csv(COMBINED_LOGSHEETS_PATH)
-    except urllib.error.HTTPError:
+    except requests.exceptions.RequestException:
         log.error("Cannot find the combined logsheets at %s" % COMBINED_LOGSHEETS_PATH)
         sys.exit()
     row_samp = df_samp.loc[df_samp["ref_code"] == conf["ref_code"]].to_dict()
