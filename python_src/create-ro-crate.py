@@ -1104,12 +1104,11 @@ def format_file_ids_and_add_download_links(
     # Note that the @ids in the stanza and hasParts are qualified
     for stanza in metadata_json["@graph"]:
         stanza["@id"] = stanza["@id"].format(**conf)
-        log.debug(f"stanza @id = {stanza['@id']}")
-        # log.debug(f"stanza @id = {stanza["@id"].format(**conf)}")
+        log.debug(f"stanza @id = {stanza['@id'].format(**conf)}")
 
         if "hasPart" in stanza:
-            log.debug(f"in hasPart stanza @id = {stanza["@id"]}")
-            log.debug(f"stanza hasPart = {stanza["hasPart"]}")
+            log.debug(f"in hasPart stanza @id = {stanza['@id']}")
+            log.debug(f"stanza hasPart = {stanza['hasPart']}")
             for entry in stanza["hasPart"]:
                 formatted_entry = entry["@id"].format(**conf)
                 entry["@id"] = formatted_entry
