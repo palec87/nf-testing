@@ -907,51 +907,6 @@ def write_dvc_upload_script(conf):
     return upload_script_path
 
 
-# def initialise_dvc_repo(warn=True):
-#     """Initialise the DVC repository in RO_CRATE_REPO_PATH
-
-#     dvc remote add -d myremote s3://mgf-data-products
-#     dvc remote modify myremote endpointurl https://s3.mesocentre.uca.fr
-#     dvc remote modify myremote profile "eosc-fairease1"
-
-#     The issue here is that ./RO_CRATE_REPO_PATH is not a git repository
-#     so cannot initialise DVC with git.
-
-#     A solution might be to have the repo as a submodule of a git repo
-#     https://git-scm.com/book/en/v2/Git-Tools-Submodules
-
-#     """
-#     msg = ("The ro-crate DVC repository should be cloned as a submodule this repository. "
-#            "https://github.com/emo-bon/metaGOflow-rocrates-dvc"
-#     )
-#     if warn:
-#         log.warning(msg)
-#         sys.exit()
-
-#     # This code should not run - just leaving it here for reference
-#     cwd_dir = Path.cwd()
-#     os.chdir(RO_CRATE_REPO_PATH)
-#     cmds = [
-#         "dvc init"  # --no-scm " - now using submodule
-#         "dvc remote add -d myremote s3://mgf-data-products",
-#         "dvc remote modify myremote endpointurl https://s3.mesocentre.uca.fr",
-#         "dvc remote modify myremote profile 'eosc-fairease1'",
-#     ]
-#     for cmd in cmds:
-#         child = subprocess.Popen(
-#             str(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
-#         )
-#         stdoutdata, stderrdata = child.communicate()
-#         return_code = child.returncode
-#         if return_code != 0:
-#             log.error(f"Error whilst trying to run command: {cmd}")
-#             log.error("Stderr: %s " % stderrdata)
-#             log.error("Return code: %s" % return_code)
-#             log.error("Exiting...")
-#             sys.exit()
-#     os.chdir(cwd_dir)
-
-
 def run_dvc_upload_script(upload_script_path):
     """Run the DVC upload script"""
     # First move to the ro-crate directory
@@ -1219,19 +1174,20 @@ def main(
     # DP 11/3 skip if part of the nextflow, which should take care of the output structure
     # log.debug("Renaming and moving target directory...")
     new_archive_path = Path(RO_CRATE_REPO_PATH, conf["source_mat_id"])
-    # try:
-    #     Path(target_directory).rename(new_archive_path)
-    # except OSError as e:
-    #     if "Invalid cross-device link" in str(e):
-    #         # Must use shutil.move to move the directory if across devices
-    #         shutil.move(target_directory, new_archive_path)
-    #     else:
-    #         log.error(
-    #             f"Error renaming and moving {target_directory} to {new_archive_path}"
-    #         )
-    #         log.error(f"Error: {e}")
-    #         sys.exit()
-    # log.info(f"Renamed and moved {target_directory} to {new_archive_path}")
+    log.debug(f"RENAME {target_directory} to {new_archive_path}")
+    try:
+        Path(target_directory).rename(new_archive_path)
+    except OSError as e:
+        if "Invalid cross-device link" in str(e):
+            # Must use shutil.move to move the directory if across devices
+            shutil.move(target_directory, new_archive_path)
+        else:
+            log.error(
+                f"Error renaming and moving {target_directory} to {new_archive_path}"
+            )
+            log.error(f"Error: {e}")
+            sys.exit()
+    log.info(f"Renamed and moved {target_directory} to {new_archive_path}")
 
     # # Move all files out of the results directory into top level
     # # and remove the results directory and files not in the RO-Crate
