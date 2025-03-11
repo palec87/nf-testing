@@ -1174,6 +1174,9 @@ def main(
     # DP 11/3 skip if part of the nextflow, which should take care of the output structure
     # log.debug("Renaming and moving target directory...")
     new_archive_path = Path(RO_CRATE_REPO_PATH, conf["source_mat_id"])
+    # save the path to a file
+    with open("path.txt", "w") as f:
+        f.write(str(new_archive_path))
     log.debug(f"RENAME {target_directory} to {new_archive_path}")
     # try:
     #     Path(target_directory).rename(new_archive_path)

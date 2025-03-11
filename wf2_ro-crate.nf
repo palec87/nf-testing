@@ -17,13 +17,14 @@ process unzipArchive {
     path files
 
     output:
-    path 'prepared_archives/*'
+    path 'prepared_archives/*', emit: archive_name
     
     script:
     """
     python ${python_path} ${archives_root} ${files} -d
     """
 }
+
 
 process createRoCrate {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
@@ -36,12 +37,26 @@ process createRoCrate {
 
     output:
     path "${input_archive_folder}/*"
+    path 'path.txt', emit: path_txt_file
     
     script:
     """
     python ${python_path} ${input_archive_folder} ${yaml_file} -d
     """
 }
+
+
+process PRINT_file {
+ 
+    input:
+    path file_path
+    
+    script:
+    """
+    echo "${file_path}"
+    """
+}
+
 
 // Workflow block
 workflow {
@@ -59,7 +74,7 @@ workflow {
     unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
 
     // ro-crate from the unzipped archive
-    createRoCrate(unzipArchive.out, python_ro_crate_script, yaml_file) // Create Ro-Crate
+    createRoCrate(unzipArchive.out.archive_name, python_ro_crate_script, yaml_file) // Create Ro-Crate
+
+    PRINT_file(createRoCrate.out.path_txt_file)
 }
-
-
