@@ -6,6 +6,7 @@ dependencies:
   - bwa=0.7.15
   - numpy
   - pandas
+  - psutil
   - pyyaml
   - requests
   - yaml=0.2.5

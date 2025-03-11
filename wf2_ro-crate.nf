@@ -8,6 +8,7 @@ params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1an
 
 // unzipArchive process
 process unzipArchive {
+    conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
     publishDir "results/unzip", mode: 'move'
     
     input:
