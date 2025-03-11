@@ -82,5 +82,6 @@ workflow {
     // ro-crate from the unzipped archive
     createRoCrate(unzipArchive.out.archive_name, python_ro_crate_script, yaml_file) // Create Ro-Crate
 
-    PRINT_file(createRoCrate.out.path_txt_file).view()
+    createRoCrate.out.path_txt_file.view { it -> "Ro-Crate created at: ${it}" }
+    PRINT_file(createRoCrate.out.path_txt_file)
 }
