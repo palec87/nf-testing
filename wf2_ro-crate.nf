@@ -27,7 +27,7 @@ process unzipArchive {
 
 process createRoCrate {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results", mode: 'copy'
+    publishDir "results/metaGOflow-rocrates-dvc", mode: 'copy'
     
     input:
     path input_archive_folder
@@ -35,7 +35,7 @@ process createRoCrate {
     path yaml_file
 
     output:
-    path 'metaGOflow-rocrates-dvc/*'
+    path "${input_archive_folder}/*"
     
     script:
     """

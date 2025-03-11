@@ -1175,19 +1175,19 @@ def main(
     # log.debug("Renaming and moving target directory...")
     new_archive_path = Path(RO_CRATE_REPO_PATH, conf["source_mat_id"])
     log.debug(f"RENAME {target_directory} to {new_archive_path}")
-    try:
-        Path(target_directory).rename(new_archive_path)
-    except OSError as e:
-        if "Invalid cross-device link" in str(e):
-            # Must use shutil.move to move the directory if across devices
-            shutil.move(target_directory, new_archive_path)
-        else:
-            log.error(
-                f"Error renaming and moving {target_directory} to {new_archive_path}"
-            )
-            log.error(f"Error: {e}")
-            sys.exit()
-    log.info(f"Renamed and moved {target_directory} to {new_archive_path}")
+    # try:
+    #     Path(target_directory).rename(new_archive_path)
+    # except OSError as e:
+    #     if "Invalid cross-device link" in str(e):
+    #         # Must use shutil.move to move the directory if across devices
+    #         shutil.move(target_directory, new_archive_path)
+    #     else:
+    #         log.error(
+    #             f"Error renaming and moving {target_directory} to {new_archive_path}"
+    #         )
+    #         log.error(f"Error: {e}")
+    #         sys.exit()
+    # log.info(f"Renamed and moved {target_directory} to {new_archive_path}")
 
     # # Move all files out of the results directory into top level
     # # and remove the results directory and files not in the RO-Crate
