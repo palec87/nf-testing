@@ -1,0 +1,11 @@
+#Optionally add your own date, else if you leave "None", today's date will be used:
+#Must conform to ISO 8601
+"datePublished": "None"
+
+#Run name: this is the value of "-n" to the "run_wf.sh" script
+"run_parameter": ""
+
+#Missing files - if a mandatory file is missing, but you still want to build a
+#ro-crate, specify file paths here as a list of strings:
+#e.g. ["krona.html", "DBB.merged_SSU.fasta.mseq.gz"]
+"missing_files" : []
