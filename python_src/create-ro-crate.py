@@ -1244,15 +1244,17 @@ def main(
 
     # Write the S3 and Github upload script
     log.debug("Writing S3 and Github upload script...")
+
+    # simplify for now, THIS will be anouther process in the workflow
     # upload_script_path = write_dvc_upload_script(conf)
-    log.debug(f"Written upload script to {upload_script_path}")
-    if upload_dvc:
-        log.info("Running upload script...")
-        run_dvc_upload_script(upload_script_path)
-        log.info("DVC upload script completed without error")
-        os.remove(upload_script_path)
-    else:
-        log.info("Not running DVC/S3 upload script")
+    # log.debug(f"Written upload script to {upload_script_path}")
+    # if upload_dvc:
+    #     log.info("Running upload script...")
+    #     run_dvc_upload_script(upload_script_path)
+    #     log.info("DVC upload script completed without error")
+    #     os.remove(upload_script_path)
+    # else:
+    #     log.info("Not running DVC/S3 upload script")
 
     # OK now we can write the URLs to the metadata.json file
     log.info("Adding download links to metadata.json...")
