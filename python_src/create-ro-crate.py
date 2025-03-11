@@ -1256,19 +1256,22 @@ def main(
     # else:
     #     log.info("Not running DVC/S3 upload script")
 
+
+
     # OK now we can write the URLs to the metadata.json file
-    log.info("Adding download links to metadata.json...")
-    format_download_links = True if upload_dvc else False
-    metadata_json_formatted = format_file_ids_and_add_download_links(
-        metadata_json,
-        new_archive_path,
-        conf,
-        format_download_links=format_download_links,
-    )
-    metadata_path = Path(new_archive_path, "ro-crate-metadata.json")
-    log.info(f"Writing metadata.json to {metadata_path}")
-    with open(metadata_path, "w") as outfile:
-        outfile.write(metadata_json_formatted)
+    # DP part of the process commented above
+    # log.info("Adding download links to metadata.json...")
+    # format_download_links = True if upload_dvc else False
+    # metadata_json_formatted = format_file_ids_and_add_download_links(
+    #     metadata_json,
+    #     new_archive_path,
+    #     conf,
+    #     format_download_links=format_download_links,
+    # )
+    # metadata_path = Path(new_archive_path, "ro-crate-metadata.json")
+    # log.info(f"Writing metadata.json to {metadata_path}")
+    # with open(metadata_path, "w") as outfile:
+    #     outfile.write(metadata_json_formatted)
 
     # Rename new ro-crate
     Path(RO_CRATE_REPO_PATH, conf["source_mat_id"]).rename(ro_crate_name)
