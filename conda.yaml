@@ -1,0 +1,9 @@
+name: my-env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - yaml=0.2.5
+  - bwa=0.7.15
+  - pandas
+  - numpy

@@ -25,7 +25,7 @@ process unzipArchive {
 }
 
 process createRoCrate {
-    conda 'pandas yaml'
+    conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
     publishDir "results/ro-crate", mode: 'move'
     
     input:
