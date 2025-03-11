@@ -9,7 +9,7 @@ params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1an
 // unzipArchive process
 process unzipArchive {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results/unzip", mode: 'copy'
+    publishDir "results", mode: 'copy'
     
     input:
     path python_path
@@ -17,7 +17,7 @@ process unzipArchive {
     path files
 
     output:
-    path './*'
+    path 'prepared_archives/*'
     
     script:
     """
@@ -27,7 +27,7 @@ process unzipArchive {
 
 process createRoCrate {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results/metaGOflow-rocrates-dvc", mode: 'copy'
+    publishDir "results", mode: 'copy'
     
     input:
     path input_archive_folder
@@ -35,7 +35,7 @@ process createRoCrate {
     path yaml_file
 
     output:
-    path './*'
+    path 'metaGOflow-rocrates-dvc/*'
     
     script:
     """
