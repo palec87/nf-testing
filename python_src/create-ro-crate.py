@@ -1215,28 +1215,32 @@ def main(
     # the md5 to use a links, so this order looks weird but is necessary
     # TODO: Could probably just move the writing of the metadata.json to the end
 
-    log.debug("Renaming and moving target directory...")
-    new_archive_path = Path(RO_CRATE_REPO_PATH, conf["source_mat_id"])
-    try:
-        Path(target_directory).rename(new_archive_path)
-    except OSError as e:
-        if "Invalid cross-device link" in str(e):
-            # Must use shutil.move to move the directory if across devices
-            shutil.move(target_directory, new_archive_path)
-        else:
-            log.error(
-                f"Error renaming and moving {target_directory} to {new_archive_path}"
-            )
-            log.error(f"Error: {e}")
-            sys.exit()
-    log.info(f"Renamed and moved {target_directory} to {new_archive_path}")
 
-    # Move all files out of the results directory into top level
-    # and remove the results directory and files not in the RO-Crate
-    log.debug("Moving all files out of the results directory...")
-    move_files_out_of_results(
-        new_archive_path, without_sequence_data=without_sequence_data
-    )
+    # DP 11/3 skip if part of the nextflow, which should take care of the output structure
+    # log.debug("Renaming and moving target directory...")
+    new_archive_path = Path(RO_CRATE_REPO_PATH, conf["source_mat_id"])
+    # try:
+    #     Path(target_directory).rename(new_archive_path)
+    # except OSError as e:
+    #     if "Invalid cross-device link" in str(e):
+    #         # Must use shutil.move to move the directory if across devices
+    #         shutil.move(target_directory, new_archive_path)
+    #     else:
+    #         log.error(
+    #             f"Error renaming and moving {target_directory} to {new_archive_path}"
+    #         )
+    #         log.error(f"Error: {e}")
+    #         sys.exit()
+    # log.info(f"Renamed and moved {target_directory} to {new_archive_path}")
+
+    # # Move all files out of the results directory into top level
+    # # and remove the results directory and files not in the RO-Crate
+    # log.debug("Moving all files out of the results directory...")
+    # move_files_out_of_results(
+    #     new_archive_path, without_sequence_data=without_sequence_data
+    # )
+
+
 
     # Write the S3 and Github upload script
     log.debug("Writing S3 and Github upload script...")
