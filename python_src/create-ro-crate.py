@@ -1274,8 +1274,8 @@ def main(
     #     outfile.write(metadata_json_formatted)
 
     # Rename new ro-crate
-    Path(RO_CRATE_REPO_PATH, conf["source_mat_id"]).rename(ro_crate_name)
-    log.info("Renamed ro-crate directory")
+    # Path(RO_CRATE_REPO_PATH, conf["source_mat_id"]).rename(ro_crate_name)
+    # log.info("Renamed ro-crate directory")
 
     # If we are uploading to dvc we need to remove the data files from the ro-crate
     # else keep them
