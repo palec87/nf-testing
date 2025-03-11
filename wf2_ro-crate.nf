@@ -45,7 +45,7 @@ process createRoCrate {
 // Workflow block
 workflow {
     def python_dir = file("/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/python_src")
-    def python_script = python_dir.resolve("prepare_data.py")
+    def python_unzip_script = python_dir.resolve("prepare_data.py")
     def python_ro_crate_script = python_dir.resolve("create-ro-crate.py")
     def yaml_file = python_dir.resolve("ro-crate.yaml")
 
@@ -55,7 +55,7 @@ workflow {
                             .map { csv -> file(csv[0]) }
                             .view { csv -> "After map: $csv" }
 
-    unzipArchive(python_script, ch_archives_root, ch_file_path) // Unzip archives
+    unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
 
     // ro-crate from the unzipped archive
     createRoCrate(unzipArchive.out, python_ro_crate_script, yaml_file) // Create Ro-Crate
