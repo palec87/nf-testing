@@ -25,6 +25,7 @@ process unzipArchive {
 }
 
 process createRoCrate {
+    conda 'pandas yaml'
     publishDir "results/ro-crate", mode: 'move'
     
     input:
