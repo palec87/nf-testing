@@ -1244,7 +1244,7 @@ def main(
 
     # Write the S3 and Github upload script
     log.debug("Writing S3 and Github upload script...")
-    upload_script_path = write_dvc_upload_script(conf)
+    # upload_script_path = write_dvc_upload_script(conf)
     log.debug(f"Written upload script to {upload_script_path}")
     if upload_dvc:
         log.info("Running upload script...")
