@@ -56,7 +56,7 @@ process PRINT_file {
     script:
     """
     while read line; do
-        echo \${line}
+        echo \$line
     done < ${file_path}
     """
     // echo "${file_path}"
