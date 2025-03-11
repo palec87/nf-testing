@@ -47,14 +47,20 @@ process createRoCrate {
 
 
 process PRINT_file {
- 
+    
+    debug true
+
     input:
     path file_path
     
     script:
     """
-    echo "${file_path}"
+    while read line; do
+        echo \${line}
+    done < ${file_path}
     """
+    // echo "${file_path}"
+    // """
 }
 
 
