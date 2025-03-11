@@ -45,6 +45,7 @@ process createRoCrate {
 workflow {
     def python_dir = file("/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/python_src")
     def python_script = python_dir.resolve("prepare_data.py")
+    def python_ro_crate_script = python_dir.resolve("create-ro-crate.py")
     def yaml_file = python_dir.resolve("ro-crate.yaml")
 
     ch_archives_root = Channel.of(params.archives_root)
@@ -55,8 +56,8 @@ workflow {
 
     unzipArchive(python_script, ch_archives_root, ch_file_path) // Unzip archives
 
-
-    createRoCrate(unzipArchive.out, python_script, yaml_file) // Create Ro-Crate
+    // ro-crate from the unzipped archive
+    createRoCrate(unzipArchive.out, python_ro_crate_script, yaml_file) // Create Ro-Crate
 }
 
 

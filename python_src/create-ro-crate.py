@@ -1182,7 +1182,7 @@ def main(
     run_id = Path(target_directory).name
     log.debug("run_id = %s" % run_id)
     if "UDI" not in run_id.split(".")[-1]:
-        log.error("Target directory name does appear to be correct format")
+        log.error("Target directory name does NOT appear to be correct format")
         log.error("It needs to match the format HWLTKDRXY.UDI210")
         log.error("Exiting...")
         sys.exit()
@@ -1193,6 +1193,7 @@ def main(
 
     # Check that an archive with the same name does not already exist
     ro_crate_name = Path(RO_CRATE_REPO_PATH, conf["source_mat_id"] + "-ro-crate")
+    log.debug(f"ro_crate_name is: {ro_crate_name}")
     if os.path.exists(ro_crate_name):
         log.error(f"An archive with the name {ro_crate_name} already exists")
         log.error("Exiting...")
