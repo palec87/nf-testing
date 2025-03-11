@@ -46,7 +46,7 @@ process createRoCrate {
 }
 
 
-process PRINT_file {
+process renameArchive {
     
     debug true
 
@@ -56,7 +56,8 @@ process PRINT_file {
     script:
     """
     while read line; do
-        echo \$line
+        li=( \$line )
+        mv \${li[0]} \${li[1]}
     done < ${file_path}
     """
     // echo "${file_path}"
@@ -83,5 +84,5 @@ workflow {
     createRoCrate(unzipArchive.out.archive_name, python_ro_crate_script, yaml_file) // Create Ro-Crate
 
     createRoCrate.out.path_txt_file.view { it -> "Ro-Crate created at: ${it}" }
-    PRINT_file(createRoCrate.out.path_txt_file)
+    renameArchive(createRoCrate.out.path_txt_file)
 }
