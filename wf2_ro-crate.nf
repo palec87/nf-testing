@@ -60,8 +60,6 @@ process renameArchive {
         mv \${li[0]} \${li[1]}
     done < ${file_path}
     """
-    // echo "${file_path}"
-    // """
 }
 
 
