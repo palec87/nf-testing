@@ -14,7 +14,7 @@ process unzipArchive {
     path files
 
     output:
-    path 'results/*', emit: archive_name
+    path 'prepared_archives/*', emit: archive_name
     
     script:
     """
