@@ -116,8 +116,8 @@ workflow {
                             .splitCsv()
                             .map { csv -> file(csv[0]) }
                             .view { csv -> "After map: $csv" }
-    sp =  ch_file_path.split(".") // Split the file name and extension
-    ch_archiveName = "${sp[0]}.${sp[1]}" // Get the file name
+    // sp =  ch_file_path.split(".") // Split the file name and extension
+    // ch_archiveName = "${sp[0]}.${sp[1]}" // Get the file name
 
     unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
     readYAML(python_dir, unzipArchive.out.archive_name, yaml_file) // Read YAML file
