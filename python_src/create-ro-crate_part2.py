@@ -12,15 +12,13 @@ import re
 import requests
 import shutil
 import glob
+import subprocess
 import logging as log
 from pathlib import Path
 
 import pandas as pd
 
 desc = """
-DP 25/03/13: this outputs the template metadata file for the ro-crate and additional file containing folder name for the renaming process
-
-
 Build a MetaGOflow Data Products ro-crate from a YAML configuration.
 
 Invoke
@@ -80,6 +78,10 @@ COMBINED_LOGSHEETS_PATH = (
     "https://raw.githubusercontent.com/emo-bon/emo-bon-data-validation/"
     "refs/heads/main/validated-data/Batch1and2_combined_logsheets_2024-11-12.csv"
 )
+OBSERVATORY_LOGSHEETS_PATH = (
+    "https://raw.githubusercontent.com/emo-bon/emo-bon-data-validation/"
+    "refs/heads/main/validated-data/Observatory_combined_logsheets_validated.csv"
+)
 # The ro-crate metadata template from Github
 TEMPLATE_URL = (
     "https://raw.githubusercontent.com/emo-bon/MetaGOflow-Data-Products-RO-Crate"
@@ -94,6 +96,9 @@ SEDIMENTS_MGF_PATH = (
     "https://docs.google.com/spreadsheets/d/"
     "1j9tRRsRCcyViDMTB1X7lx8POY1P5bV7UijxKKSebZAM/gviz/tq?tqx=out:csv&sheet=SEDIMENTS"
 )
+
+# S3 store path
+S3_STORE_URL = "https://s3.mesocentre.uca.fr/mgf-data-products/files/md5"
 
 # This is the workflow YAML file, the prefix is the "-n" parameter of the
 # "run_wf.sh" script:
@@ -139,6 +144,20 @@ MANDATORY_FILES = [
     "./taxonomy-summary/LSU/{prefix}.merged_LSU.fasta.mseq.tsv",
     "./taxonomy-summary/LSU/{prefix}.merged_LSU.fasta.mseq.txt",
 ]
+
+YAML_ERROR = """
+Cannot find the run YAML file. Bailing...
+
+If you invoked run_wf.sh like this, then the YAML configuration file will be
+named "green.yml in the "HWLTKDRXY.UDI210" directory:
+
+    $ run_wf.sh -n green -d  HWLTKDRXY.UDI210 \
+                -f input_data/${DATA_FORWARD} \
+                -r input_data/${DATA_REVERSE}
+
+Configure the "run_parameter" with "-n" parameter value in the config.yml file:
+"run_parameter": "green"
+"""
 
 
 def concatenate_ips_chunks(path):
@@ -200,6 +219,34 @@ def get_ref_code_and_prefix(conf):
                 continue
     log.error("Cannot find the ref_code for run_id %s" % conf["run_id"])
     sys.exit()
+
+
+# No longer used
+def writeHTMLpreview(roc_path):
+    """Write the HTML preview file using rochtml-
+    https://www.npmjs.com/package/ro-crate-html
+    """
+    rochtml_path = shutil.which("rochtml")
+    if not rochtml_path:
+        log.info(
+            "HTML preview file cannot be written due to missing executable (rochtml)"
+        )
+    else:
+        cmd = "%s %s" % (rochtml_path, roc_path)
+        child = subprocess.Popen(
+            str(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+        )
+        stdoutdata, stderrdata = child.communicate()
+        return_code = child.returncode
+        if return_code != 0:
+            log.error("Error whilst trying write HTML file")
+            log.error("Stderr: %s " % stderrdata)
+            log.error("Command: %s" % cmd)
+            log.error("Return code: %s" % return_code)
+            log.error("Bailing...")
+            sys.exit()
+        else:
+            log.info("Written HTML preview file")
 
 
 def sequence_categorisation_stanzas(target_directory, template, conf):
@@ -532,6 +579,27 @@ def get_creator_and_mgf_version_information(conf, overide_error=False):
         "env_package must be either 'water_column' or 'soft_sediment'"
         "Found: %s" % env_package
     )
+    # Get the observatory ID
+    # obs_id = list(row_samp["obs_id"].values())[0]
+
+    # Get the observatory data
+    # df_obs = pd.read_csv(OBSERVATORY_LOGSHEETS_PATH)
+    # Get the observatory data using the obs_id and env_package variables
+    # row_obs = df_obs.loc[
+    #    (df_obs["obs_id"] == obs_id) & (df_obs["env_package"] == env_package)
+    # ].to_dict()
+
+    # Sampling person name and ORCID
+    # conf["sampling_person_name"] = list(row_samp["sampl_person"].values())[0]
+    # conf["sampling_person_identifier"] = list(row_samp["sampl_person_orcid"].values())[
+    #    0
+    # ]
+    # Sampling person affiliation
+    # conf["sampling_person_station_edmoid"] = list(
+    #    row_obs["organization_edmoid"].values()
+    # )[0]
+    # conf["sampling_person_station_name"] = list(row_obs["organization"].values())[0]
+    # conf["sampling_person_station_country"] = list(row_obs["geo_loc_name"].values())[0]
 
     # Add MGF analysis creator_person
     mgf_path = FILTERS_MGF_PATH if env_package == "water_column" else SEDIMENTS_MGF_PATH
@@ -544,13 +612,23 @@ def get_creator_and_mgf_version_information(conf, overide_error=False):
                 conf["creator_person_identifier"] = (
                     "https://orcid.org/0000-0002-4927-979X"
                 )
-
+                # conf["creator_person_station_edmoid"] = "2516"
+                # conf["creator_person_station_name"] = (
+                #    "Centre of Marine Sciences (CCMAR)"
+                # )
+                # conf["creator_person_station_country"] = "Portugal"
             elif row["who"] == "HCMR":
                 conf["creator_person_name"] = "Stelios Ninidakis"
                 conf["creator_person_identifier"] = (
                     "https://orcid.org/0000-0003-3898-9451"
                 )
-
+                # conf["creator_person_station_edmoid"] = "141"
+                # conf["creator_person_station_name"] = (
+                #    "Institute of Marine Biology "
+                #    "Biotechnology and Aquaculture (IMBBC) Hellenic Centre "
+                #    "for Marine Research (HCMR)"
+                # )
+                # conf["creator_person_station_country"] = "Greece"
             else:
                 log.error("Unrecognised creater of MGF data: %s" % row["who"])
                 sys.exit()
@@ -792,12 +870,209 @@ def write_metadata_json(
     return template
 
 
+def write_dvc_upload_script(conf):
+    """Write the DVC S3 and Github upload script
+    
+    s5cmd --profile eosc-fairease1 \
+        --endpoint-url https://s3.mesocentre.uca.fr ls s3://mgf-data-products/
+    
+    Note that DVC is auto-staging files added using dvc add, so just need a dvc push
+    and later git commit
+    """
+    log.debug(f"MANDATORY_FILES = {MANDATORY_FILES}")
+    upload_script_path = Path(RO_CRATE_REPO_PATH, f"{conf['source_mat_id']}_upload.sh")
+    with open(upload_script_path, "w") as f:
+        f.write("#!/bin/bash\n")
+        f.write("set -e\n")
+        f.write("set -x\n")
+        f.write("\n")
+
+        # Add the DVC commands
+        for fp in MANDATORY_FILES:
+            log.debug(f"fp filepath = {fp}")
+            if fp == "./RNA-counts":
+                np = Path(
+                    conf["source_mat_id"],
+                    "taxonomy-summary",
+                    fp.format(**conf),
+                )
+            else:
+                np = Path(conf["source_mat_id"], fp.format(**conf))
+            f.write(f"dvc add {np}\n")
+
+        f.write("\n")
+        f.write("dvc push\n")
+        f.write("\n")
+    log.info("Written DVC S3 upload script")
+    return upload_script_path
+
+
+def run_dvc_upload_script(upload_script_path):
+    """Run the DVC upload script"""
+    # First move to the ro-crate directory
+    cwd_dir = Path.cwd()
+    upload_script = Path(upload_script_path).name
+    os.chdir(RO_CRATE_REPO_PATH)
+    cmd = f"bash {upload_script}"
+    child = subprocess.Popen(
+        str(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+    )
+    stdoutdata, stderrdata = child.communicate()
+    return_code = child.returncode
+    if return_code != 0:
+        log.error("Error whilst trying to run the upload script")
+        log.error("Stderr: %s " % stderrdata)
+        log.error("Command: %s" % cmd)
+        log.error("Return code: %s" % return_code)
+        log.error("Exiting...")
+        sys.exit()
+    os.chdir(cwd_dir)
+
+
+def move_files_out_of_results(new_archive_path, without_sequence_data=False):
+    """Move files from results to the parent directory, ro-crate root
+
+    Also remove chunk lists from functional-annotation so that dirs can be copied
+    as is to the RO-Crate
+    """
+    src_path = new_archive_path / "results"
+    # Check for chunk lists in functional-annotation
+    chunks_path = src_path / "functional-annotation" / "*.chunks"
+    for cl in list(chunks_path.glob("*")):
+        log.debug(f"Removing chunk list: {cl}")
+        cl.unlink()
+
+    # grabs all files and dirs in results
+    # not recursive: good! we can move the dirs as is
+    for fp in src_path.glob("*"):
+        log.debug(f"File in results glob: {fp}")
+        if fp.is_dir():
+            trg_path = src_path.parent  # gets the parent of the folder
+            log.debug(f"Moving dir {fp} to {trg_path.joinpath(fp.name)}")
+            fp.rename(trg_path.joinpath(fp.name))  # moves to parent folder.
+
+        # Note that:
+        # Path("./RNA-counts").name not in ["./RNA-counts"]
+        elif fp.is_file():
+            # Only move the top level files
+            if fp.name in ["fastp.html", "RNA-counts"]:
+                trg_path = src_path.parent
+                log.debug(f"Moving file {fp} to {trg_path.joinpath(fp.name)}")
+                fp.rename(trg_path.joinpath(fp.name))
+                continue
+            if not without_sequence_data:
+                # Move all files to the parent directory incl sequence data files
+                nfp = os.path.join("./", str(fp.name))
+                log.debug(f"Is_file: new file path = {nfp}")
+                log.debug(
+                    f"New file path in MANDATORY_FILES = {nfp in MANDATORY_FILES  }"
+                )
+                if nfp in MANDATORY_FILES:
+                    trg_path = src_path.parent
+                    log.debug("Moving file {fp} to {trg_path.joinpath(fp.name)}")
+                    fp.rename(trg_path.joinpath(fp.name))
+                else:
+                    log.error("Could not deal with file: %s" % fp)
+                    sys.exit()
+
+    # Move RNA-counts into the taxonomy-summary directory
+    old_path = new_archive_path.joinpath("RNA-counts")
+    new_path = new_archive_path.joinpath("taxonomy-summary", "RNA-counts")
+    log.debug(f"Moving {old_path} to {new_path}")
+    old_path.rename(new_path)
+
+    # Remove the results folder
+    shutil.rmtree(src_path)  # incl. files not destined for the RO-Crate
+
+
+def remove_data_files_from_ro_crate(ro_crate_name):
+    """Remove the data files from the ro-crate directory
+
+    To save space, but also now the ro-crate dir will only contain git tracked files
+    """
+    ignore_files = ["ro-crate-metadata.json", ".gitignore"]
+    all_dvcs = list(Path(ro_crate_name).rglob("*.dvc"))
+    for f in Path(ro_crate_name).rglob("*"):
+        if f.is_file() and f.name not in ignore_files and f not in all_dvcs:
+            f.unlink()
+            log.debug(f"Removed {f.name}")
+        else:
+            log.debug(f"Keeping {f.name}")
+    log.info("Removed data files from ro-crate directory")
+
+
+def format_file_ids_and_add_download_links(
+    metadata_json, new_archive_path, conf, format_download_links=False
+):
+    """Format the file @ids with .dvc and add the download links
+    to the metadata.json file from the DVC files
+    """
+
+    # Make a path dict from the MANDATONY_FILES
+    pd = {}
+    for f in MANDATORY_FILES:
+        pd[Path(f).name.format(**conf)] = f.format(**conf)
+    log.debug(f"pd = {pd}")
+
+    # Note that the @ids in the stanza and hasParts are qualified
+    for stanza in metadata_json["@graph"]:
+        stanza["@id"] = stanza["@id"].format(**conf)
+        log.debug(f"stanza @id = {stanza['@id'].format(**conf)}")
+
+        if "hasPart" in stanza:
+            log.debug(f"in hasPart stanza @id = {stanza['@id']}")
+            log.debug(f"stanza hasPart = {stanza['hasPart']}")
+            for entry in stanza["hasPart"]:
+                formatted_entry = entry["@id"].format(**conf)
+                entry["@id"] = formatted_entry
+                log.debug(f"Formatting entry @id = {formatted_entry}")
+
+                # # Deal with RNA-counts separately
+                # if entry["@id"] == "./taxonomy-summary/RNA-counts":
+                #     continue
+                # # Skip the sequence data links
+                # elif formatted_entry.startswith("https://"):
+                #     entry["@id"] = formatted_entry
+                #     continue
+                # else:
+                #     # Fully qualify the @id?
+                #     entry["@id"] = formatted_entry
+
+        # If run_dvc_upload is False, do not add download links
+        # Get the md5 sum from the DVC files and use as the download link
+        if format_download_links:
+            if stanza["@type"] and stanza["@type"] == "File":
+                log.debug("In @type File stanza")
+
+                if stanza["@id"] == "./taxonomy-summary/RNA-counts":
+                    fn = Path(new_archive_path, "taxonomy-summary", "RNA-counts.dvc")
+                else:
+                    # Remove the ./ from the @id
+                    key = Path(stanza["@id"]).name
+                    log.debug(f"Path(stanza['@id']).name = {key}")
+                    fn = Path(new_archive_path, pd[key] + ".dvc")
+                if not fn.exists():
+                    log.error(f"Cannot find the file {fn}")
+                    sys.exit()
+                md5 = yaml.safe_load(open(fn))["outs"][0]["md5"]
+                md5_link = os.path.join(S3_STORE_URL, md5[:2], md5[2:])
+                stanza["downloadUrl"] = f"{md5_link}"
+
+                # Add contentSize
+                fp = Path(new_archive_path, pd[key])
+                fsize = os.path.getsize(fp)
+                stanza["contentSize"] = f"{fsize}"
+                log.debug(f"Adding contentSize {fsize} to {fp}")
+
+    return json.dumps(metadata_json, indent=4)
+
+
 def main(
     target_directory,
     yaml_config,
     debug,
+    upload_dvc=False,
     without_sequence_data=False,
-    override_error=False,
 ):
     """ """
     # Logging
@@ -841,16 +1116,53 @@ def main(
     # filepaths includes the seq_cat files
     check_and_format_data_file_paths(target_directory, conf, check_exists=True)
 
-    # Create the metadata.json file but dont write yet, need to add links later
-    log.info("Formatting metadata.json...")
-    metadata_json = write_metadata_json(
-        target_directory, conf, without_sequence_data, override_error
+    log.debug("Moving all files out of the results directory...")
+    move_files_out_of_results(
+        target_directory, without_sequence_data=without_sequence_data
     )
 
-    #save metadata_josn to a file
-    log.info("Writing metadata_part1.json to file.")
-    with open("metadata_part1.json", "w") as f:
-        f.write(json.dumps(metadata_json, indent=4))
+
+
+    # # Write the S3 and Github upload script
+    # log.debug("Writing S3 and Github upload script...")
+
+    # # simplify for now, THIS will be anouther process in the workflow
+    # upload_script_path = write_dvc_upload_script(conf)
+    # log.debug(f"Written upload script to {upload_script_path}")
+    # if upload_dvc:
+    #     log.info("Running upload script...")
+    #     run_dvc_upload_script(upload_script_path)
+    #     log.info("DVC upload script completed without error")
+    #     os.remove(upload_script_path)
+    # else:
+    #     log.info("Not running DVC/S3 upload script")
+
+
+
+    # OK now we can write the URLs to the metadata.json file
+    # DP part of the process commented above
+    # log.info("Adding download links to metadata.json...")
+    # format_download_links = True if upload_dvc else False
+    # metadata_json_formatted = format_file_ids_and_add_download_links(
+    #     metadata_json,
+    #     new_archive_path,
+    #     conf,
+    #     format_download_links=format_download_links,
+    # )
+    # metadata_path = Path(new_archive_path, "ro-crate-metadata.json")
+    # log.info(f"Writing metadata.json to {metadata_path}")
+    # with open(metadata_path, "w") as outfile:
+    #     outfile.write(metadata_json_formatted)
+
+    # Rename new ro-crate
+    # Path(RO_CRATE_REPO_PATH, conf["source_mat_id"]).rename(ro_crate_name)
+    # log.info("Renamed ro-crate directory")
+
+    # If we are uploading to dvc we need to remove the data files from the ro-crate
+    # else keep them
+    if upload_dvc:
+        remove_data_files_from_ro_crate(ro_crate_name)
+    log.info(f"{ro_crate_name} written without error")
 
 
 if __name__ == "__main__":
@@ -867,24 +1179,24 @@ if __name__ == "__main__":
     )
     parser.add_argument("-d", "--debug", action="store_true", help="DEBUG logging")
     parser.add_argument(
+        "-u",
+        "--upload_dvc",
+        action="store_true",
+        default=False,
+        help="Upload files to S3 using DVC (default: False)",
+    )
+    parser.add_argument(
         "-w",
         "--without_sequence_data",
         action="store_true",
         default=False,
         help="Do not add sequence data files (default: False)",
     )
-    parser.add_argument(
-        "-o",
-        "--override_error",
-        action="store_true",
-        default=False,
-        help="Override creator person missing error (default: False)",
-    )
     args = parser.parse_args()
     main(
         args.target_directory,
         args.yaml_config,
         args.debug,
+        args.upload_dvc,
         args.without_sequence_data,
-        args.override_error,
     )

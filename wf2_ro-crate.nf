@@ -83,12 +83,32 @@ process createRoCrate {
 }
 
 
+process createRoCrate2 {
+    conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
+    publishDir "results", mode: 'copy'
+    // publishDir "results/${outFolder}", mode: 'copy'
+    
+    input:
+    path archive_folder
+    path python_path
+    path yaml_file
+    path outFolder
+
+    output:
+    path "${archive_folder}/*", emit: folder_path
+    
+    script:
+    """
+    python ${python_path} ${archive_folder} ${yaml_file} -d
+    """
+}
 
 // Workflow block
 workflow {
     def python_dir = file("/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/python_src")
     def python_unzip_script = python_dir.resolve("prepare_data.py")
     def python_ro_crate_script = python_dir.resolve("create-ro-crate_part1.py")
+    def python_ro_crate_script2 = python_dir.resolve("create-ro-crate_part2.py")
     def yaml_file = python_dir.resolve("ro-crate.yaml")
 
     ch_archives_root = Channel.of(params.archives_root)
@@ -117,5 +137,15 @@ workflow {
 
     createRoCrate.out.folder_path.view { it -> "folder_path variable: ${it}" }
     createRoCrate.out.metadata1.view { it -> "metadata1 variable: ${it}" }
+
+    println("projectDir: $projectDir")
+    println("###### PART 2 of the rocrate creation ######")
+
+    createRoCrate(
+        unzipArchive.out.archive_name,
+        python_ro_crate_script2,
+        yaml_file,
+        ch_newArchive,
+    )
 
 }
