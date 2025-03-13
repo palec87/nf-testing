@@ -141,7 +141,7 @@ workflow {
     println("projectDir: $projectDir")
     println("###### PART 2 of the rocrate creation ######")
 
-    createRoCrate(
+    createRoCrate2(
         unzipArchive.out.archive_name,
         python_ro_crate_script2,
         yaml_file,
