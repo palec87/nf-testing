@@ -28,7 +28,7 @@ process unzipArchive {
 
 process createRoCrate {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results/metaGOflow-rocrates-dvc", mode: 'copy'
+    publishDir "results", mode: 'copy'
     
     input:
     path input_archive_folder
@@ -36,8 +36,9 @@ process createRoCrate {
     path yaml_file
 
     output:
-    path "${input_archive_folder}/*"
-    path 'path.txt', emit: path_txt_file
+    path "${input_archive_folder}/*", emit: folder_path1
+    path 'path.csv', emit: path_csv
+    path 'metadata_part1.json', emit: metadata1
     
     script:
     """
@@ -47,16 +48,21 @@ process createRoCrate {
 
 
 process renameArchive {
-    
     debug true
+    publishDir "results", mode: 'copy'
 
     input:
+    // path folder_path
     path file_path
+
+    output:
+    path "/*"
     
     script:
     """
     while read line; do
         li=( \$line )
+        echo \$li
         mv \${li[0]} \${li[1]}
     done < ${file_path}
     """
@@ -81,6 +87,6 @@ workflow {
     // ro-crate from the unzipped archive
     createRoCrate(unzipArchive.out.archive_name, python_ro_crate_script, yaml_file) // Create Ro-Crate
 
-    createRoCrate.out.path_txt_file.view { it -> "Ro-Crate created at: ${it}" }
-    renameArchive(createRoCrate.out.path_txt_file)
+    createRoCrate.out.path_csv.view { it -> "Ro-Crate created at: ${it}" }
+    renameArchive(createRoCrate.out.path_csv)
 }
