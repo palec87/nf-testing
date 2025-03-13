@@ -73,7 +73,7 @@ process renameArchive {
 workflow {
     def python_dir = file("/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/python_src")
     def python_unzip_script = python_dir.resolve("prepare_data.py")
-    def python_ro_crate_script = python_dir.resolve("create-ro-crate.py")
+    def python_ro_crate_script = python_dir.resolve("create-ro-crate_part1.py")
     def yaml_file = python_dir.resolve("ro-crate.yaml")
 
     ch_archives_root = Channel.of(params.archives_root)
