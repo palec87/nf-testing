@@ -52,7 +52,8 @@ process readYAML {
 
     conf["run_id"] = run_id
     conf = get_ref_code_and_prefix(conf)
-    while open("ro-crate-name.csv", "w") as f:
+
+    with open("ro-crate-name.csv", "w") as f:
         f.write(conf["source_mat_id"])
     """
 }
@@ -70,8 +71,7 @@ workflow {
 
     unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
 
-
-    readYAML(unzipArchive.out.archive_name, python_dir, ch_file_path)
+    readYAML(unzipArchive.out.archive_name, python_dir, ch_file_path) // Read YAML file
 
     readYAML.out.newArchiveName.view()
 }
