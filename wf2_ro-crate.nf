@@ -72,8 +72,8 @@ process createRoCrate {
     path outFolder
 
     output:
-    // path "${archive_folder}/*", emit: folder_path1
-    path "${projectDir}/*", emit: folder_path
+    path "${archive_folder}/*", emit: folder_path
+    // path "${projectDir}/*", emit: folder_path
     // path 'path.csv', emit: path_csv
     path 'metadata_part1.json', emit: metadata1
     
