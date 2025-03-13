@@ -28,9 +28,8 @@ process readYAML {
     publishDir "results", mode: 'copy'
 
     input:
-    path archive_folder
     path python_path
-    path yaml_file
+    path archive_folder
 
     output:
     path 'ro-crate-name.csv', emit: newArchiveName
@@ -46,7 +45,7 @@ process readYAML {
     sys.path.append("${python_path}")
     import read_config as rc
 
-    conf = rc.read_yaml("${yaml_file}")
+    conf = rc.read_yaml("${archive_folder}")
     print(conf)
     run_id = Path(target_directory).name
 
@@ -71,7 +70,7 @@ workflow {
 
     unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
 
-    readYAML(unzipArchive.out.archive_name, python_dir, ch_file_path) // Read YAML file
+    readYAML(python_dir, unzipArchive.out.archive_name) // Read YAML file
 
     readYAML.out.newArchiveName.view()
 }

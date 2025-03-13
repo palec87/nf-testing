@@ -137,10 +137,10 @@ def main(
         # Path(run_id).rename(oca_dir)
 
     # CD back to home directory
-    log.info(f"Changing directory to {home_dir}")
-    os.chdir(home_dir)
+    # log.info(f"Changing directory to {home_dir}")
+    # os.chdir(home_dir)
 
-    log.info("Done")
+    # log.info("Done")
 
 
 if __name__ == "__main__":
