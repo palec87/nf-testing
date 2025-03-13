@@ -28,62 +28,38 @@ process unzipArchive {
 
 process createRoCrate {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results", mode: 'copy'
+    // publishDir "results", mode: 'copy'
     
     input:
-    path input_archive_folder
+    path archive_folder
     path python_path
     path yaml_file
 
     output:
-    path "${input_archive_folder}/*", emit: folder_path1
+    path "${archive_folder}/*", emit: folder_path1
     path 'path.csv', emit: path_csv
     path 'metadata_part1.json', emit: metadata1
     
     script:
     """
-    python ${python_path} ${input_archive_folder} ${yaml_file} -d
+    python ${python_path} ${archive_folder} ${yaml_file} -d
     """
 }
 
 
-// process renameArchive {
-//     debug true
-//     publishDir "results", mode: 'copy'
-
-//     input:
-//     // path folder_path
-//     tuple file_path
-
-//     output:
-//     path "${file_path.parent}"
-    
-//     script:
-//     // move from one folder to another base on the file_path tuple
-
-
-//     """
-//     while read line; do
-//         li=( \$line )
-//         echo \$li
-//         mv ${file_path[0]} \${li[1]}
-//     done < ${file_path}
-//     """
-// }
-
-
 process renameArchive {
-    // debug true
-    // publishDir "results", mode: 'copy'
+    debug true
+    publishDir "results", mode: 'copy'
 
     input:
-    tuple path(f1), path(f2)
+    path f1
+    path f2
 
     script:
     """
     echo ${f1}
     echo ${f2}
-    mv ./results/${f1} ./results/${f2}
+    mv ${f1} ${f2}
     """
 }
 
@@ -110,13 +86,44 @@ workflow {
 
     new_ch_files = createRoCrate.out.path_csv
                     .splitCsv()
-                    .map { csv -> tuple(file(csv[0]), file(csv[1])) }
+                    .map { csv -> file(csv[1]) }
                     .view { csv -> "After second map: $csv" }
 
     // move files to new folders
-    renameArchive(new_ch_files)
+    renameArchive(unzipArchive.out.archive_name, new_ch_files)
 
     // renameArchive(createRoCrate.out.path_csv)
 }
+
+
+
+
+
+
+
+
+// process renameArchive {
+//     debug true
+//     publishDir "results", mode: 'copy'
+
+//     input:
+//     // path folder_path
+//     tuple file_path
+
+//     output:
+//     path "${file_path.parent}"
+    
+//     script:
+//     // move from one folder to another base on the file_path tuple
+
+
+//     """
+//     while read line; do
+//         li=( \$line )
+//         echo \$li
+//         mv ${file_path[0]} \${li[1]}
+//     done < ${file_path}
+//     """
+// }
 
 
