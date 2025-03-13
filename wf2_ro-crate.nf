@@ -59,6 +59,7 @@ process renameArchive {
     """
     echo ${f1}
     echo ${f2}
+    mkdir -p ${f2}
     mv ${f1}/* ${f2}
     """
 }
