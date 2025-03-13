@@ -90,9 +90,9 @@ workflow {
     createRoCrate.out.path_csv.view { it -> "Ro-Crate created at: ${it}" }
 
 
-    new_ch_files = Channel.fromPath(createRoCrate.out.path_csv)
-                            .splitCsv()
-                            .map { csv -> [file(csv[0]), file(csv[1])] }
-                            .view { csv -> "After second map: $csv" }
+    new_ch_files = createRoCrate.out.path_csv
+                    .splitCsv()
+                    .map { csv -> [file(csv[0]), file(csv[1])] }
+                    .view { csv -> "After second map: $csv" }
     // renameArchive(createRoCrate.out.path_csv)
 }
