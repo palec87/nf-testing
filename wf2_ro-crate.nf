@@ -73,8 +73,8 @@ process createRoCrate {
 
 
 process renameArchive {
-    debug true
-    publishDir "results", mode: 'copy'
+    // debug true
+    // publishDir "results", mode: 'copy'
 
     input:
     tuple path(f1), path(f2)
@@ -83,7 +83,7 @@ process renameArchive {
     """
     echo ${f1}
     echo ${f2}
-    mv results/${f1} results/${f2}
+    mv ./results/${f1} ./results/${f2}
     """
 }
 
