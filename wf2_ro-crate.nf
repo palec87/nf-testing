@@ -56,7 +56,7 @@ process renameArchive {
     path file_path
 
     output:
-    path "/*"
+    path "${file_path.parent}/*"
     
     script:
     """
