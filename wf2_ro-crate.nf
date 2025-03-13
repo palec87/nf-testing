@@ -73,7 +73,7 @@ process createRoCrate {
     path outFolder
 
     output:
-    path "${archive_folder}/*".basename, emit: folder_path
+    path "${archive_folder}/*", emit: folder_path
     // path "${projectDir}/*", emit: folder_path
     // path 'path.csv', emit: path_csv
     path 'metadata_part1.json', emit: metadata1
@@ -81,6 +81,7 @@ process createRoCrate {
     script:
     """
     python ${python_path} ${archive_folder} ${yaml_file} -d
+    mv ${archive_folder}/* ./
     """
 }
 
