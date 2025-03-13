@@ -81,18 +81,11 @@ process renameArchive {
 
     script:
     """
-    mv ${f1} ${f2}
+    echo ${f1}
+    echo ${f2}
+    mv results/${f1} results/${f2}
     """
 }
-
-// workflow renameOutFolder {
-//     take:
-//     folder_path1
-//     folder_path2
-
-//     main:
-//     renameArchive(folder_path1, folder_path2)
-// }
 
 // Workflow block
 workflow {
