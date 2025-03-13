@@ -30,6 +30,8 @@ process readYAML {
     input:
     path python_path
     path archive_folder
+    path yaml_file
+    
 
     output:
     path 'ro-crate-name.csv', emit: newArchiveName
@@ -45,7 +47,7 @@ process readYAML {
     sys.path.append("${python_path}")
     import read_config as rc
 
-    conf = rc.read_yaml("${archive_folder}")
+    conf = rc.read_yaml("${yaml_file}")
     print(conf)
     run_id = Path(target_directory).name
 
@@ -61,6 +63,7 @@ process readYAML {
 workflow {
     def python_dir = file("/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/python_src")
     def python_unzip_script = python_dir.resolve("prepare_data.py")
+    def yaml_file = python_dir.resolve("ro-crate.yaml")
 
     ch_archives_root = Channel.of(params.archives_root)
     ch_file_path = Channel.fromPath(params.files)
@@ -70,7 +73,7 @@ workflow {
 
     unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
 
-    readYAML(python_dir, unzipArchive.out.archive_name) // Read YAML file
+    readYAML(python_dir, unzipArchive.out.archive_name, yaml_file) // Read YAML file
 
     readYAML.out.newArchiveName.view()
 }
