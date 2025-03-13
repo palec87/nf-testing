@@ -4,6 +4,7 @@
 params.files = "inp_files.csv"
 // Default parameter input
 params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"
+params.output_dir = './results'
 
 
 // unzipArchive process
@@ -72,7 +73,7 @@ process createRoCrate {
     path outFolder
 
     output:
-    path "${archive_folder}/*", emit: folder_path
+    path "${archive_folder}/*".basename, emit: folder_path
     // path "${projectDir}/*", emit: folder_path
     // path 'path.csv', emit: path_csv
     path 'metadata_part1.json', emit: metadata1
@@ -116,12 +117,6 @@ workflow {
 
     createRoCrate.out.folder_path.view { it -> "folder_path variable: ${it}" }
     createRoCrate.out.metadata1.view { it -> "metadata1 variable: ${it}" }
-
-
-    // new_ch_files = createRoCrate.out.path_csv
-    //                 .splitCsv()
-    //                 .map { csv -> file(csv[1]) }
-    //                 .view { csv -> "After second map: $csv" }
 
 }
 
