@@ -25,10 +25,28 @@ process unzipArchive {
     """
 }
 
+// process extractFolderName {
+//     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
+    
+//     input:
+//     path archive_folder
+//     path python_path
+//     path yaml_file
+
+//     output:
+//     path "${archive_folder}/*", emit: folder_path1
+//     path 'path.csv', emit: path_csv
+//     path 'metadata_part1.json', emit: metadata1
+    
+//     script:
+//     """
+//     python ${python_path} ${archive_folder} ${yaml_file} -d
+//     """
+// }
 
 process createRoCrate {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    // publishDir "results", mode: 'copy'
+    publishDir "results", mode: 'copy'
     
     input:
     path archive_folder
