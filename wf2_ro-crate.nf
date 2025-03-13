@@ -74,7 +74,7 @@ process createRoCrate {
     output:
     // path "${archive_folder}/*", emit: folder_path1
     path "${projectDir}/*", emit: folder_path
-    path 'path.csv', emit: path_csv
+    // path 'path.csv', emit: path_csv
     path 'metadata_part1.json', emit: metadata1
     
     script:
@@ -102,21 +102,26 @@ workflow {
     readYAML(python_dir, unzipArchive.out.archive_name, yaml_file) // Read YAML file
 
     readYAML.out.newArchiveName.view { it -> "New Ro-Crate name: ${it}" }
+    ch_newArchive = readYAML.out.newArchiveName
+        .splitCsv()
+        .map { csv -> file(csv[0]) }
+
     // ro-crate from the unzipped archive
     createRoCrate(
         unzipArchive.out.archive_name,
         python_ro_crate_script,
         yaml_file,
-        readYAML.out.newArchiveName,
+        ch_newArchive,
     )
 
-    createRoCrate.out.path_csv.view { it -> "I need to create Ro-Crate here: ${it}" }
+    createRoCrate.out.folder_path.view { it -> "folder_path variable: ${it}" }
+    createRoCrate.out.metadata1.view { it -> "metadata1 variable: ${it}" }
 
 
-    new_ch_files = createRoCrate.out.path_csv
-                    .splitCsv()
-                    .map { csv -> file(csv[1]) }
-                    .view { csv -> "After second map: $csv" }
+    // new_ch_files = createRoCrate.out.path_csv
+    //                 .splitCsv()
+    //                 .map { csv -> file(csv[1]) }
+    //                 .view { csv -> "After second map: $csv" }
 
 }
 
