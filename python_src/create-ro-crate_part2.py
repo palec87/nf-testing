@@ -1027,17 +1027,6 @@ def format_file_ids_and_add_download_links(
                 entry["@id"] = formatted_entry
                 log.debug(f"Formatting entry @id = {formatted_entry}")
 
-                # # Deal with RNA-counts separately
-                # if entry["@id"] == "./taxonomy-summary/RNA-counts":
-                #     continue
-                # # Skip the sequence data links
-                # elif formatted_entry.startswith("https://"):
-                #     entry["@id"] = formatted_entry
-                #     continue
-                # else:
-                #     # Fully qualify the @id?
-                #     entry["@id"] = formatted_entry
-
         # If run_dvc_upload is False, do not add download links
         # Get the md5 sum from the DVC files and use as the download link
         if format_download_links:
@@ -1118,7 +1107,7 @@ def main(
 
     log.debug("Moving all files out of the results directory...")
     move_files_out_of_results(
-        target_directory, without_sequence_data=without_sequence_data
+        Path(target_directory), without_sequence_data=without_sequence_data
     )
 
 
