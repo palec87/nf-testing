@@ -47,27 +47,52 @@ process createRoCrate {
 }
 
 
+// process renameArchive {
+//     debug true
+//     publishDir "results", mode: 'copy'
+
+//     input:
+//     // path folder_path
+//     tuple file_path
+
+//     output:
+//     path "${file_path.parent}"
+    
+//     script:
+//     // move from one folder to another base on the file_path tuple
+
+
+//     """
+//     while read line; do
+//         li=( \$line )
+//         echo \$li
+//         mv ${file_path[0]} \${li[1]}
+//     done < ${file_path}
+//     """
+// }
+
+
 process renameArchive {
     debug true
     publishDir "results", mode: 'copy'
 
     input:
-    // path folder_path
-    path file_path
+    tuple path(f1), path(f2)
 
-    output:
-    path "${file_path.parent}/*"
-    
     script:
     """
-    while read line; do
-        li=( \$line )
-        echo \$li
-        mv \${li[0]} \${li[1]}
-    done < ${file_path}
+    mv ${f1} ${f2}
     """
 }
 
+// workflow renameOutFolder {
+//     take:
+//     folder_path1
+//     folder_path2
+
+//     main:
+//     renameArchive(folder_path1, folder_path2)
+// }
 
 // Workflow block
 workflow {
@@ -92,7 +117,13 @@ workflow {
 
     new_ch_files = createRoCrate.out.path_csv
                     .splitCsv()
-                    .map { csv -> [file(csv[0]), file(csv[1])] }
+                    .map { csv -> tuple(file(csv[0]), file(csv[1])) }
                     .view { csv -> "After second map: $csv" }
+
+    // move files to new folders
+    renameArchive(new_ch_files)
+
     // renameArchive(createRoCrate.out.path_csv)
 }
+
+
