@@ -9,7 +9,7 @@ params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1an
 // unzipArchive process
 process unzipArchive {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results", mode: 'copy'
+    // publishDir "results", mode: 'copy'
     
     input:
     path python_path
@@ -25,17 +25,55 @@ process unzipArchive {
     """
 }
 
-process createRoCrate {
+process readYAML {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
     publishDir "results", mode: 'copy'
+
+    input:
+    path python_path
+    path target_directory
+    path yaml_file
+    
+
+    output:
+    path 'ro-crate-name.csv', emit: newArchiveName
+    
+    script:
+    """
+    #!/usr/bin/env python
+    import sys
+    import os
+    from pathlib import Path
+
+
+    sys.path.append("${python_path}")
+    import read_config as rc
+
+    conf = rc.read_yaml("${yaml_file}")
+    print(conf)
+    run_id = Path("${target_directory}").name
+
+    conf["run_id"] = run_id
+    conf = rc.get_ref_code_and_prefix(conf)
+
+    with open("ro-crate-name.csv", "w") as f:
+        f.write(conf["source_mat_id"])
+    """
+}
+
+process createRoCrate {
+    conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
+    publishDir "results/${outFolder}", mode: 'copy'
     
     input:
     path archive_folder
     path python_path
     path yaml_file
+    path outFolder
 
     output:
-    path "${archive_folder}/*", emit: folder_path1
+    // path "${archive_folder}/*", emit: folder_path1
+    path "${projectDir}/*", emit: folder_path
     path 'path.csv', emit: path_csv
     path 'metadata_part1.json', emit: metadata1
     
@@ -46,22 +84,6 @@ process createRoCrate {
 }
 
 
-process renameArchive {
-    debug true
-    publishDir "results/${f2}", mode: 'copy'
-
-    input:
-    path f1
-    path f2
-
-    script:
-    """
-    echo ${f1}
-    echo ${f2}
-    mkdir -p ${f2}
-    mv ${f1}/* ${f2}
-    """
-}
 
 // Workflow block
 workflow {
@@ -77,11 +99,18 @@ workflow {
                             .view { csv -> "After map: $csv" }
 
     unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
+    readYAML(python_dir, unzipArchive.out.archive_name, yaml_file) // Read YAML file
 
+    readYAML.out.newArchiveName.view { it -> "New Ro-Crate name: ${it}" }
     // ro-crate from the unzipped archive
-    createRoCrate(unzipArchive.out.archive_name, python_ro_crate_script, yaml_file) // Create Ro-Crate
+    createRoCrate(
+        unzipArchive.out.archive_name,
+        python_ro_crate_script,
+        yaml_file,
+        readYAML.out.newArchiveName,
+    )
 
-    createRoCrate.out.path_csv.view { it -> "Ro-Crate created at: ${it}" }
+    createRoCrate.out.path_csv.view { it -> "I need to create Ro-Crate here: ${it}" }
 
 
     new_ch_files = createRoCrate.out.path_csv
@@ -89,10 +118,6 @@ workflow {
                     .map { csv -> file(csv[1]) }
                     .view { csv -> "After second map: $csv" }
 
-    // move files to new folders
-    renameArchive(unzipArchive.out.archive_name, new_ch_files)
-
-    // renameArchive(createRoCrate.out.path_csv)
 }
 
 

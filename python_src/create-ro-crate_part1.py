@@ -853,9 +853,9 @@ def main(
         f.write(json.dumps(metadata_json, indent=4))
 
     # save the path to a file
-    log.info(f"Writing new folder name to 'path1.csv' file.")
-    with open("path.csv", "w") as f:
-        f.write(str(target_directory + ',' + conf["source_mat_id"]))
+    # log.info(f"Writing new folder name to 'path1.csv' file.")
+    # with open("path.csv", "w") as f:
+    #     f.write(str(target_directory + ',' + conf["source_mat_id"]))
 
 
 if __name__ == "__main__":
