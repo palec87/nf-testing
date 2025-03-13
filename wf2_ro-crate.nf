@@ -49,7 +49,7 @@ process createRoCrate {
 
 process renameArchive {
     debug true
-    publishDir "results", mode: 'copy'
+    publishDir "results/${f2}", mode: 'copy'
 
     input:
     path f1
@@ -59,7 +59,7 @@ process renameArchive {
     """
     echo ${f1}
     echo ${f2}
-    mv ${f1} ${f2}
+    mv ${f1}/* ${f2}
     """
 }
 
