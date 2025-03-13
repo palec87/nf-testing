@@ -49,7 +49,7 @@ process readYAML {
 
     conf = rc.read_yaml("${yaml_file}")
     print(conf)
-    run_id = Path(str(${target_directory})).name
+    run_id = Path("${target_directory}").name
 
     conf["run_id"] = run_id
     conf = get_ref_code_and_prefix(conf)
