@@ -10,7 +10,6 @@ params.output_dir = './results'
 // unzipArchive process
 process unzipArchive {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    // publishDir "results", mode: 'copy'
     
     input:
     path python_path
@@ -64,7 +63,8 @@ process readYAML {
 
 process createRoCrate {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results/${outFolder}", mode: 'copy'
+    publishDir "results", mode: 'copy'
+    // publishDir "results/${outFolder}", mode: 'copy'
     
     input:
     path archive_folder
@@ -73,16 +73,12 @@ process createRoCrate {
     path outFolder
 
     output:
-    // path "${archive_folder}/*", emit: folder_path
-    path "./*", emit: folder_path
-    // path "${projectDir}/*", emit: folder_path
-    // path 'path.csv', emit: path_csv
+    path "${archive_folder}/*", emit: folder_path
     path 'metadata_part1.json', emit: metadata1
     
     script:
     """
     python ${python_path} ${archive_folder} ${yaml_file} -d
-    mv ${archive_folder}/* ./
     """
 }
 
@@ -100,6 +96,8 @@ workflow {
                             .splitCsv()
                             .map { csv -> file(csv[0]) }
                             .view { csv -> "After map: $csv" }
+    sp =  ch_file_path.split(".") // Split the file name and extension
+    ch_archiveName = "${sp[0]}.${sp[1]}" // Get the file name
 
     unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
     readYAML(python_dir, unzipArchive.out.archive_name, yaml_file) // Read YAML file
@@ -121,36 +119,3 @@ workflow {
     createRoCrate.out.metadata1.view { it -> "metadata1 variable: ${it}" }
 
 }
-
-
-
-
-
-
-
-
-// process renameArchive {
-//     debug true
-//     publishDir "results", mode: 'copy'
-
-//     input:
-//     // path folder_path
-//     tuple file_path
-
-//     output:
-//     path "${file_path.parent}"
-    
-//     script:
-//     // move from one folder to another base on the file_path tuple
-
-
-//     """
-//     while read line; do
-//         li=( \$line )
-//         echo \$li
-//         mv ${file_path[0]} \${li[1]}
-//     done < ${file_path}
-//     """
-// }
-
-
