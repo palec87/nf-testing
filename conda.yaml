@@ -4,6 +4,7 @@ channels:
   - bioconda
 dependencies:
   - bwa=0.7.15
+  - minio
   - numpy
   - pandas
   - psutil
