@@ -1,8 +1,10 @@
 #!/usr/bin/env nextflow
 
 process readYAML {
+    debug true
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
     publishDir "results", mode: 'copy'
+    tag target_directory
 
     input:
     path python_path
@@ -11,7 +13,7 @@ process readYAML {
     
 
     output:
-    path 'ro-crate-name.csv', emit: newArchiveName
+    path "ro-crate-${target_directory}.csv", emit: newArchiveName
     
     script:
     """
@@ -31,7 +33,7 @@ process readYAML {
     conf["run_id"] = run_id
     conf = rc.get_ref_code_and_prefix(conf)
 
-    with open(f"ro-crate-{conf["source_mat_id"]}.csv", "w") as f:
+    with open(f"ro-crate-${target_directory}.csv", "w") as f:
         f.write(conf["source_mat_id"])
     """
 }
