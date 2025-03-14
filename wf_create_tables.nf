@@ -44,8 +44,8 @@ workflow {
     ch_archives_root = Channel.of(params.archives_root)
     ch_file_path = Channel.fromPath(params.files)
                             .splitCsv()
-                            .map { csv -> file(csv[0]) }
-                            .view { csv -> "After map: $csv" }
+                            .map { row -> file(row[0]) }
+                            .view()
 
     unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
     readYAML(python_dir, unzipArchive.out.archive_name, yaml_file) // Read YAML file
