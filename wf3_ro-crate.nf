@@ -99,7 +99,7 @@ process createRoCrate2 {
     
     script:
     """
-    python ${python_path} ${archive_folder} ${yaml_file} -d -u
+    python ${python_path} -d -u ${archive_folder} ${yaml_file}
     """
 }
 
