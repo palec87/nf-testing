@@ -209,6 +209,17 @@ def main():
 
     # print(code_keys)
     LSU_data = parse_local_inventory("LSU", code_keys, folder=PROJECT_DIR / "results-tables/")
+    SSU_data = parse_local_inventory("SSU", code_keys, folder=PROJECT_DIR / "results-tables/")
+    print(f"Parsed {len(LSU_data)} rows from LSU data")
+    print(f"Parsed {len(SSU_data)} rows from SSU data")
+    lsu_df = pd.DataFrame.from_records(LSU_data)
+    ssu_df = pd.DataFrame.from_records(SSU_data)
+    lsu_df.info()
+    ssu_df.info()
+    lsu_outfile = "metagoflow_analyses.LSU"
+    ssu_outfile = "metagoflow_analyses.SSU"
+    lsu_df.to_csv(OUT_PATH.joinpath(lsu_outfile), index=False)
+    ssu_df.to_csv(OUT_PATH.joinpath(ssu_outfile), index=False)
 
 
     # LSU_data = parse_inventories("LSU")
