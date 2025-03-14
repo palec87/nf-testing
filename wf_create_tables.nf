@@ -36,9 +36,26 @@ process extractTables {
     """
 }
 
+process combineTables {
+    conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
+    // publishDir "results-tables", mode: 'move'
+
+    input:
+    path python_path
+
+    // output:
+    // path 'prepared_archives/*', emit: archive_name
+    
+    script:
+    """
+    python ${python_path}
+    """
+}
+
 workflow {
     def python_dir = file("/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/python_src")
     def python_unzip_script = python_dir.resolve("prepare_data.py")
+    def python_combine_script = python_dir.resolve("combine_tables.py")
     def yaml_file = python_dir.resolve("ro-crate.yaml")
 
     ch_archives_root = Channel.value(params.archives_root)
@@ -56,5 +73,7 @@ workflow {
         .view()
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
+
+    combineTables(python_combine_script)
     
 }

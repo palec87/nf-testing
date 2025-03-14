@@ -1,4 +1,3 @@
-
 import io
 import math
 import os
@@ -94,56 +93,6 @@ def parse_taxonomy(taxonomy):
     return classification
 
 
-def parse_inventories(inv):
-    """
-    Parse the LSU and SSU inventories
-    """
-    objects = client.list_objects(bucket_name)
-    count = 0
-    all_objs_data = []  # list of dicts, each a taxonomic entry
-
-    for obj in objects:
-        all_sample_data = []
-        # For each of the 54 LSU inventories
-        prefix = code_keys[obj.object_name[:-1]][1]
-        fn = f"{prefix}.merged_{inv}.fasta.mseq.tsv"
-        fp = os.path.join(obj.object_name, fn)
-        try:
-            response = client.get_object(bucket_name, fp)
-        except S3Error:
-            raise
-        finally:
-            csv_data = pd.read_csv(response, sep="\t", skiprows=1)
-            response.close()
-            response.release_conn()
-        for _, row in csv_data.iterrows():
-            data = {}  # For one taxonomic entry
-            # For each row in the inventory
-            taxonomy = parse_taxonomy(row["taxonomy"])
-            data["ref_code"] = code_keys[obj.object_name[:-1]][0]
-            # ref_code from Github Batch Run Information sheet
-            data["reads_name"] = obj.object_name[:-1]  # reads_name from same
-            data["ncbi_tax_id"] = row.get("taxid")  # NCBI taxid
-            data["abundance"] = row.get(f"{inv}_rRNA")  # Abundance
-            data["superkingdom"] = taxonomy.get("superkingdom")
-            data["kingdom"] = taxonomy.get("kingdom", None)
-            data["phylum"] = taxonomy.get("phylum", None)
-            data["class"] = taxonomy.get("class", None)
-            data["order"] = taxonomy.get("order", None)
-            data["family"] = taxonomy.get("family", None)
-            data["genus"] = taxonomy.get("genus", None)
-            data["species"] = taxonomy.get("species", None)
-            all_sample_data.append(data)
-
-        all_objs_data.extend(all_sample_data)
-
-        count += 1
-    print(f"Found {count} inventories from {inv}")
-    if count != EXPECTED_ANALYSES:
-        raise ValueError(f"Could not find all {EXPECTED_ANALYSES} records in v1")
-    return all_objs_data
-
-
 def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folder: Path = None):
     count = 0
     all_objs_data = []  # list of dicts, each a taxonomic entry
@@ -168,8 +117,6 @@ def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folder: Pa
             # For each row in the inventory
             taxonomy = parse_taxonomy(row["taxonomy"])
             data["ref_code"] = val_tuple[0]
-            # ref_code from Github Batch Run Information sheet
-            data["reads_name"] = val_tuple[0]  # reads_name from same
             data["ncbi_tax_id"] = row.get("taxid")  # NCBI taxid
             data["abundance"] = row.get(f"{inv}_rRNA")  # Abundance
             data["superkingdom"] = taxonomy.get("superkingdom")
@@ -223,42 +170,6 @@ def main():
         os.makedirs(OUT_PATH)
     lsu_df.to_csv(OUT_PATH.joinpath(lsu_outfile), index=False)
     ssu_df.to_csv(OUT_PATH.joinpath(ssu_outfile), index=False)
-
-
-    # LSU_data = parse_inventories("LSU")
-    # SSU_data = parse_inventories("SSU")
-    # print(f"Parsed {len(LSU_data)} rows from LSU data")
-    # print(f"Parsed {len(SSU_data)} rows from SSU data")
-    # lsu_df = pd.DataFrame.from_records(LSU_data)
-    # ssu_df = pd.DataFrame.from_records(SSU_data)
-    # lsu_df.info()
-    # ssu_df.info()
-    # lsu_outfile = "metagoflow_analyses.LSU"
-    # ssu_outfile = "metagoflow_analyses.SSU"
-    # lsu_df.to_csv(OUT_PATH.joinpath(lsu_outfile), index=False)
-    # ssu_df.to_csv(OUT_PATH.joinpath(ssu_outfile), index=False)
-
-
-    # The destination bucket and filename on the MinIO server
-    # bucket_name = "emo-bon-tables"
-
-    # for table in TABLES:
-    #     dfp = pd.read_csv(OUT_PATH / f"{table}")
-    #     # https://www.iana.org/assignments/media-types/application/vnd.apache.parquet
-    #     mime_application_type = "vnd.apache.parquet"
-    #     df_bytes = dfp.to_parquet(None, engine="pyarrow", compression="snappy")
-    #     buffer = io.BytesIO(df_bytes)
-    #     bucket_name = Path(f"v{str(VERSION)}")
-    #     file_name = Path(f"{table}.parquet")
-    #     dest = bucket_name / file_name
-    #     client.put_object(
-    #         bucket_name,
-    #         dest,
-    #         data=buffer,
-    #         length=len(df_bytes),
-    #         content_type=mime_application_type,
-    #     )
-    #     print(f"\t{dest} successfully uploaded as object to {bucket_name}")
 
 
 if __name__ == "__main__":
