@@ -60,10 +60,20 @@ process readYAML {
         f.write(conf["source_mat_id"])
     """
 }
-
+// publishDir(
+//     path: { "$params.outdir/" },
+//     pattern: "*_results",
+//     mode: 'copy',
+//     saveAs: { fn -> "${fn.split('_')[0]}/all_results/${fn.split("_")[1]}" }
+// )
 process createRoCrate {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results", mode: 'copy'
+    publishDir(
+        path: { "results" },
+        pattern: "*.json",
+        mode: 'copy',
+    )
+    // "results", mode: 'copy'
     // publishDir "results/${outFolder}", mode: 'copy'
     
     input:
