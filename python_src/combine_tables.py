@@ -17,8 +17,8 @@ from minio import S3Error
 from minio import Minio
 
 
-with open("credentials.json") as f:
-    _creds = json.load(f)
+# with open("credentials.json") as f:
+#     _creds = json.load(f)
 
 
 # client = Minio(
