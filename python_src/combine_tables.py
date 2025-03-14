@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pandas as pd
 
-PROJECT_DIR = Path.cwd().parents[0]
+PROJECT_DIR = Path.cwd()
 sys.path.append(str(PROJECT_DIR))
 # sys.path.append(str(PROJECT_DIR / "src"))
 
@@ -64,7 +64,6 @@ bucket_name = "emo-bon-data"
 def extract_keys(data):
     d = {}
     for _, row in data.iterrows():
-        print(row)
         try:
             # Not all entries are sequenced
             reads_name = row["reads_name"].split("_")[-1]
@@ -155,7 +154,9 @@ def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folder: Pa
         prefix = val_tuple[1]
         fn = f"{prefix}.merged_{inv}.fasta.mseq.tsv"
         fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)
-        print('FULL path', fp, val_tuple[2])
+        lst = ["EMOBON_OSD74_Wa_21-tables", "EMOBON_VB_Wa_43-tables"]
+        if any(x in fp for x in lst):
+            print('FULL path', fp, val_tuple[2])
         try:
             csv_data = pd.read_csv(fp, sep="\t", skiprows=1)
         except FileNotFoundError as e:
