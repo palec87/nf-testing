@@ -52,7 +52,7 @@ workflow {
 
     ch_newArchive = readYAML.out.newArchiveName
         .splitCsv()
-        .map { row -> file(row[0]) }
+        .map { csv -> file(csv[0]) }
         .view()
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)

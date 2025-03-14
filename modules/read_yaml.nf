@@ -31,7 +31,7 @@ process readYAML {
     conf["run_id"] = run_id
     conf = rc.get_ref_code_and_prefix(conf)
 
-    with open("ro-crate-name.csv", "w") as f:
+    with open(f"ro-crate-{conf["source_mat_id"]}.csv", "w") as f:
         f.write(conf["source_mat_id"])
     """
 }
