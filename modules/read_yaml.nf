@@ -4,7 +4,7 @@ process readYAML {
     debug true
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
     publishDir "results", mode: 'copy'
-    tag target_directory
+    tag "$target_directory"
 
     input:
     path python_path
