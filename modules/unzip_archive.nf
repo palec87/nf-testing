@@ -7,13 +7,13 @@ process unzipArchive {
     input:
     path python_path
     path archives_root
-    path files
+    path file
 
     output:
     path 'prepared_archives/*', emit: archive_name
     
     script:
     """
-    python ${python_path} ${archives_root} ${files} -d
+    python ${python_path} -d ${archives_root} ${file}
     """
 }

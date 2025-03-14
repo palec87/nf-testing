@@ -41,7 +41,7 @@ workflow {
     def python_unzip_script = python_dir.resolve("prepare_data.py")
     def yaml_file = python_dir.resolve("ro-crate.yaml")
 
-    ch_archives_root = Channel.of(params.archives_root)
+    ch_archives_root = Channel.value(params.archives_root)
     ch_file_path = Channel.fromPath(params.files)
                             .splitCsv()
                             .map { row -> file(row[0]) }
@@ -53,6 +53,7 @@ workflow {
     ch_newArchive = readYAML.out.newArchiveName
         .splitCsv()
         .map { row -> file(row[0]) }
+        .view()
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
     
