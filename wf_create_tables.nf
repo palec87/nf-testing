@@ -62,21 +62,49 @@ process readYAML {
 
 process extractTables {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results", mode: 'copy'
+    publishDir "results-tables", mode: 'copy'
 
     input:
     path archive_name
     path target_directory
-    path yaml_file
     
     output:
-    path 'ro-crate-name.csv', emit: newArchiveName
+    path "${target_directory}-tables"
     
     script:
     """
-    #!/usr/bin/env python
-    import sys
-    import os
-    from pathlib import Path
+    mkdir -p ${target_directory}-tables
+    cp ${archive_name}/results/functional_annotation/DBB.merged.summary.go ${target_directory}-tables
+    cp ${archive_name}/results/functional_annotation/DBB.merged.summary.go_slim ${target_directory}-tables
+    cp ${archive_name}/results/functional_annotation/DBB.merged.summary.ips ${target_directory}-tables
+    cp ${archive_name}/results/functional_annotation/DBB.merged.summary.ko ${target_directory}-tables
+    cp ${archive_name}/results/functional_annotation/DBB.merged.summary.pfam ${target_directory}-tables
+    cp ${archive_name}/results/taxonomy_summary/LSU/DBB.merged_LSU.fasta.mseq.tsv ${target_directory}-tables
+    cp ${archive_name}/results/taxonomy_summary/SSU/DBB.merged_SSU.fasta.mseq.tsv ${target_directory}-tables
     """
+}
+
+workflow {
+    def python_dir = file("/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/python_src")
+    def python_unzip_script = python_dir.resolve("prepare_data.py")
+    // def python_ro_crate_script = python_dir.resolve("create-ro-crate_part1.py")
+    // def python_ro_crate_script2 = python_dir.resolve("create-ro-crate_part2.py")
+    // def python_ro_crate_script3 = python_dir.resolve("create-ro-crate_part3.py")
+    def yaml_file = python_dir.resolve("ro-crate.yaml")
+
+    ch_archives_root = Channel.of(params.archives_root)
+    ch_file_path = Channel.fromPath(params.files)
+                            .splitCsv()
+                            .map { csv -> file(csv[0]) }
+                            .view { csv -> "After map: $csv" }
+
+    unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
+    readYAML(python_dir, unzipArchive.out.archive_name, yaml_file) // Read YAML file
+
+    ch_newArchive = readYAML.out.newArchiveName
+        .splitCsv()
+        .map { csv -> file(csv[0]) }
+
+    extractTables(unzipArchive.out.archive_name, ch_newArchive)
+    
 }
