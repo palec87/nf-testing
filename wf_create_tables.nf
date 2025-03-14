@@ -22,6 +22,7 @@ process extractTables {
     
     output:
     path "${target_directory}-tables"
+    val true, emit: trigger
     
     script:
     """
@@ -41,6 +42,7 @@ process combineTables {
     // publishDir "results-tables", mode: 'move'
 
     input:
+    val ready
     path python_path
 
     // output:
@@ -74,6 +76,6 @@ workflow {
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
 
-    combineTables(python_combine_script)
+    combineTables(extractTables.out.trigger, python_combine_script)
     
 }
