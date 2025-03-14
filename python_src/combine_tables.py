@@ -218,6 +218,9 @@ def main():
     ssu_df.info()
     lsu_outfile = "metagoflow_analyses.LSU"
     ssu_outfile = "metagoflow_analyses.SSU"
+    # create the output directory if it does not exist
+    if not os.path.exists(OUT_PATH):
+        os.makedirs(OUT_PATH)
     lsu_df.to_csv(OUT_PATH.joinpath(lsu_outfile), index=False)
     ssu_df.to_csv(OUT_PATH.joinpath(ssu_outfile), index=False)
 
