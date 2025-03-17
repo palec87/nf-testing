@@ -169,14 +169,24 @@ def parse_other_tax_tables(inv, code_keys, folder: Path = None):
         except FileNotFoundError as e:
             continue
 
+        if inv == "ips":
+            keys = ["ref_code", "accession", "description", "abundance"]
+        else:
+            keys = ["ref_code", "entry", "name", "abundance"]
+
         for _, row in csv_data.iterrows():
-            all_sample_data.append(
-                (val_tuple[0],              # ref_code
-                 row[1],                    # accession for IPS, or KEGG/PFAM entry
-                 row[2],                    # description for IPS, "name" for KEGG/PFAM
-                 int(row[0])                # abundance
-                )
-            )
+            data = {}
+            data[keys[0]] = val_tuple[0]
+            data[keys[1]] = row[1]
+            data[keys[2]] = row[2]
+            data[keys[3]] = int(row[0])
+            all_sample_data.append(data)
+            #     (val_tuple[0],              # ref_code
+            #      row[1],                    # accession for IPS, or KEGG/PFAM entry
+            #      row[2],                    # description for IPS, "name" for KEGG/PFAM
+            #      int(row[0])                # abundance
+            #     )
+            # )
         all_objs_data.extend(all_sample_data)
         count += 1
     print(f"Found {count} samples for {inv} summary")
@@ -201,15 +211,13 @@ def go_tables(inv, code_keys, folder: Path = None):
             continue
 
         for _, row in csv_data.iterrows():
-            logger.info(f"GO: {row}")
-            all_sample_data.append(
-                (val_tuple[0],              # ref_code
-                row[0],                     # id
-                row[1],                     # name
-                row[2],                     # aspect
-                row[3]                      # abundance
-                )
-            )
+            data = {}
+            data['ref_code'] = val_tuple[0]
+            data['id'] = row[0]
+            data['name'] = row[1]
+            data['aspect'] = row[2]
+            data['abundance'] = row[3]
+            all_sample_data.append(data)
         all_objs_data.extend(all_sample_data)
         count += 1
     print(f"Found {count} samples for {inv}")
@@ -269,8 +277,8 @@ def main(project_dir):
     logger.info(f"OUT_PATH: {OUT_PATH}")
     logger.info(f"tables_folder: {project_dir}")
     for path, table in all_data.items():
-        logger.info("SAVING PATh for the combined table.")
-        logger.info(os.path.join(OUT_PATH, f"{path}.csv"))
+        # logger.info("SAVING PATh for the combined table.")
+        # logger.info(os.path.join(OUT_PATH, f"{path}.csv"))
 
         table_df = pd.DataFrame.from_records(table)
         table_df.to_csv(os.path.join(OUT_PATH, f"{path}.csv"), index=False)
