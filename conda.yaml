@@ -8,6 +8,7 @@ dependencies:
   - numpy
   - pandas
   - psutil
+  - pyarrow
   - pyyaml
   - requests
   - yaml=0.2.5
