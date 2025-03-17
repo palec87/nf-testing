@@ -219,7 +219,7 @@ def main(project_dir):
     batch1 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-001/run-information-batch-001.csv"
     batch2 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-002/run-information-batch-002.csv"
     OUT_PATH = os.path.join(project_dir, "combined_tables")
-    tables_folder = os.path.join(project_dir, "results-tables")
+    # tables_folder = os.path.join(project_dir, "results-tables")
 
     logger.info("creating code_keys")
     code_keys = {}
@@ -235,13 +235,13 @@ def main(project_dir):
 
     logger.info(code_keys)
     all_data = {}
-    LSU_data = parse_local_inventory("LSU", code_keys, folder=tables_folder)
-    SSU_data = parse_local_inventory("SSU", code_keys, folder=tables_folder)
-    go_data = go_tables("go", code_keys, folder=tables_folder)
-    go_slim_data = go_tables("go_slim", code_keys, folder=tables_folder)
-    ips_data = parse_other_tax_tables("ips", code_keys, folder=tables_folder)
-    ko_data = parse_other_tax_tables("ko", code_keys, folder=tables_folder)
-    pfam_data = parse_other_tax_tables("pfam", code_keys, folder=tables_folder)
+    LSU_data = parse_local_inventory("LSU", code_keys, folder=project_dir)
+    SSU_data = parse_local_inventory("SSU", code_keys, folder=project_dir)
+    go_data = go_tables("go", code_keys, folder=project_dir)
+    go_slim_data = go_tables("go_slim", code_keys, folder=project_dir)
+    ips_data = parse_other_tax_tables("ips", code_keys, folder=project_dir)
+    ko_data = parse_other_tax_tables("ko", code_keys, folder=project_dir)
+    pfam_data = parse_other_tax_tables("pfam", code_keys, folder=project_dir)
     logger.info(f"Parsed {len(LSU_data)} rows from LSU data")
     logger.info(f"Parsed {len(SSU_data)} rows from SSU data")
     logger.info(f"Parsed {len(go_data)} rows from GO data")
@@ -266,7 +266,7 @@ def main(project_dir):
         os.makedirs(OUT_PATH)
     logger.info("SAVING PATh for the combined table.")
     logger.info(f"OUT_PATH: {OUT_PATH}")
-    logger.info(f"tables_folder: {tables_folder}")
+    logger.info(f"tables_folder: {project_dir}")
     for path, table in all_data.items():
         logger.info("SAVING PATh for the combined table.")
         logger.info(os.path.join(OUT_PATH, f"{path}.csv"))
