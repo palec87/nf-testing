@@ -10,8 +10,37 @@ params.files = "inp_files.csv"
 params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"
 
 
+// Remove chunks from the I5 files
+// Concatenate the I5 files:
+// <prefix>.merged_CDS.I5_001.tsv.gz
+// <prefix>.merged_CDS.I5_002.tsv.gz
+// into:
+// <prefix>.merged_CDS.I5.tsv.gz
 
-// I thinnk this is the solution for the renaming problems too, or????
+// original structure, HMNJKDSX3:
+// |   |-- functional-annotation
+// |   |   |-- DBB.merged_CDS.I5_001.tsv.gz
+// |   |   |-- DBB.merged_CDS.I5_002.tsv.gz
+// |   |   |-- DBB.merged_CDS.I5.tsv.chunks
+
+process mergeI5 {
+    conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
+
+    input:
+    path python_path
+    path archive_name
+
+    // output:
+    // val identifier
+
+    script:
+    """
+    python ${python_path} -d ${archive_name} 
+    """
+}
+
+
+// I think this is the solution for the renaming problems too, or????
 process extractTables {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
     publishDir "results-tables", mode: 'copy'
@@ -59,6 +88,7 @@ process combineTables {
 workflow {
     def python_dir = file("/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/python_src")
     def python_unzip_script = python_dir.resolve("prepare_data.py")
+    def python_merge_script = python_dir.resolve("mgf_concatenate_I5_chunks.py")
     def python_combine_script = python_dir.resolve("combine_tables.py")
     def yaml_file = python_dir.resolve("ro-crate.yaml")
 
@@ -75,6 +105,8 @@ workflow {
         .splitCsv()
         .map { csv -> file(csv[0]) }
         .view()
+
+    mergeI5(python_merge_script, unzipArchive.out.archive_name)
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
 
