@@ -151,9 +151,9 @@ def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folder: Pa
     return all_objs_data
 
 
-def ips_table(code_keys, folder: Path = None):
+def parse_other_tax_tables(inv, code_keys, folder: Path = None):
     """
-    Parse IPS summary files
+    Parse IPS/KEGG/pfam summary files
     """
     count = 0
     all_objs_data = []  # list of dicts, each a taxonomic entry
@@ -161,7 +161,7 @@ def ips_table(code_keys, folder: Path = None):
         all_sample_data = []
 
         prefix = val_tuple[1]           # like DBB etc
-        fn = f"{prefix}.merged.summary.ips"
+        fn = f"{prefix}.merged.summary.{inv}"
         fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)  # this is the
         try:
             csv_data = pd.read_csv(fp, sep="\t", skiprows=1)
@@ -171,14 +171,14 @@ def ips_table(code_keys, folder: Path = None):
         for _, row in csv_data.iterrows():
             all_sample_data.append(
                 (val_tuple[0],              # ref_code
-                 row[1],                              # accession
-                 row[2],                              # description
-                 row[0]                               # abundance
+                 row[1],                    # accession for IPS, or KEGG/PFAM entry
+                 row[2],                    # description for IPS, "name" for KEGG/PFAM
+                 int(row[0])                # abundance
                 )
             )
         all_objs_data.extend(all_sample_data)
         count += 1
-    print(f"Found {count} samples for IPS")
+    print(f"Found {count} samples for {inv} summary")
     return all_objs_data
 
 
@@ -237,10 +237,16 @@ def main(project_dir):
     SSU_data = parse_local_inventory("SSU", code_keys, folder=project_dir / "results-tables/")
     go_data = go_tables("go", code_keys, folder=project_dir / "results-tables/")
     go_slim_data = go_tables("go_slim", code_keys, folder=project_dir / "results-tables/")
+    ips_data = parse_other_tax_tables("ips", code_keys, folder=project_dir / "results-tables/")
+    ko_data = parse_other_tax_tables("ko", code_keys, folder=project_dir / "results-tables/")
+    pfam_data = parse_other_tax_tables("pfam", code_keys, folder=project_dir / "results-tables/")
     logger.info(f"Parsed {len(LSU_data)} rows from LSU data")
     logger.info(f"Parsed {len(SSU_data)} rows from SSU data")
     logger.info(f"Parsed {len(go_data)} rows from GO data")
     logger.info(f"Parsed {len(go_slim_data)} rows from GO slim data")
+    logger.info(f"Parsed {len(ips_data)} rows from IPS data")
+    logger.info(f"Parsed {len(ko_data)} rows from KEGG data")
+    logger.info(f"Parsed {len(pfam_data)} rows from PFAM data")
     # lsu_df = pd.DataFrame.from_records(LSU_data)
     # ssu_df = pd.DataFrame.from_records(SSU_data)
     # go_df = pd.DataFrame.from_records(go_data)
@@ -250,6 +256,9 @@ def main(project_dir):
     all_data["metagoflow_analyses.SSU"] = SSU_data
     all_data["metagoflow_analyses.go"] = go_data
     all_data["metagoflow_analyses.go_slim"] = go_slim_data
+    all_data["metagoflow_analyses.ips"] = ips_data
+    all_data["metagoflow_analyses.ko"] = ko_data
+    all_data["metagoflow_analyses.pfam"] = pfam_data
     # create the output directory if it does not exist
     if not os.path.exists(OUT_PATH):
         os.makedirs(OUT_PATH)

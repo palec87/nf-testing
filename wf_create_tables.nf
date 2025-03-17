@@ -87,7 +87,7 @@ process combineTables {
     
     script:
     """
-    python ${python_path}
+    python ${python_path} ${folder_path}
     """
 }
 
