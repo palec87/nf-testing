@@ -2,23 +2,25 @@ import io
 import math
 import os
 import sys
-import json
+import argparse
+import textwrap
 import urllib.request
 import logging
 from pathlib import Path
-from pyspark.sql import SparkSession
-
-spark = SparkSession.builder.getOrCreate()
-
 import pandas as pd
+# from pyspark.sql import SparkSession
 
-PROJECT_DIR = Path.cwd()
-sys.path.append(str(PROJECT_DIR))
+# spark = SparkSession.builder.getOrCreate()
+
+desc = """
+Combine tables in the specific extraction directory into a single tables
+"""
+
 logger = logging.getLogger(name="CombineTables")
 # sys.path.append(str(PROJECT_DIR / "src"))
 
-from minio import S3Error
-from minio import Minio
+# from minio import S3Error
+# from minio import Minio
 
 
 # with open("credentials.json") as f:
@@ -39,7 +41,6 @@ BATCH1AND2_TOTAL = 188
 
 # Expected number of metaGOflow analyses in version 1 of the data release
 EXPECTED_ANALYSES = 54
-OUT_PATH = PROJECT_DIR / "combined_tables"
 TAXONOMY_RANK_KEYS = {
     "sk": "superkingdom",
     "k": "kingdom",  # Note that prokaryotes do not have a kingdom entry
@@ -150,6 +151,37 @@ def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folder: Pa
     return all_objs_data
 
 
+def ips_table(code_keys, folder: Path = None):
+    """
+    Parse IPS summary files
+    """
+    count = 0
+    all_objs_data = []  # list of dicts, each a taxonomic entry
+    for _, val_tuple in code_keys.items():
+        all_sample_data = []
+
+        prefix = val_tuple[1]           # like DBB etc
+        fn = f"{prefix}.merged.summary.ips"
+        fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)  # this is the
+        try:
+            csv_data = pd.read_csv(fp, sep="\t", skiprows=1)
+        except FileNotFoundError as e:
+            continue
+
+        for _, row in csv_data.iterrows():
+            all_sample_data.append(
+                (val_tuple[0],              # ref_code
+                 row[1],                              # accession
+                 row[2],                              # description
+                 row[0]                               # abundance
+                )
+            )
+        all_objs_data.extend(all_sample_data)
+        count += 1
+    print(f"Found {count} samples for IPS")
+    return all_objs_data
+
+
 def go_tables(inv, code_keys, folder: Path = None):
     """
     Parse GO summary files
@@ -165,7 +197,6 @@ def go_tables(inv, code_keys, folder: Path = None):
         try:
             csv_data = pd.read_csv(fp, sep="\t", skiprows=1)
         except FileNotFoundError as e:
-            # print(e)
             continue
 
         for _, row in csv_data.iterrows():
@@ -182,28 +213,11 @@ def go_tables(inv, code_keys, folder: Path = None):
     print(f"Found {count} samples for {inv}")
     return all_objs_data
 
-    # go_data = parse_go_summary(".merged.summary.go")
-    # go_slim_data = parse_go_summary(".merged.summary.go_slim")
-    # print(len(go_data))
-    # print(len(go_slim_data))
-    # spark.sql("DROP TABLE IF EXISTS metagoflow_analyses.go")
-    # spark.sql("DROP TABLE IF EXISTS metagoflow_analyses.go_slim")
-    # schema = StructType([
-    #   StructField("ref_code", StringType(), False),
-    #   StructField("reads_name", StringType(), False),
-    #   StructField("id", StringType(), False),
-    #   StructField("name", StringType(), False),
-    #   StructField("aspect", StringType(), False),
-    #   StructField("abundance", LongType(), False)
-    # ])
-    # df_go = spark.createDataFrame(go_data, schema)
-    # df_go.writeTo("metagoflow_analyses.go").create()
-    # df_go = spark.createDataFrame(go_slim_data, schema)
-    # df_go.writeTo("metagoflow_analyses.go_slim").create()
 
-def main():
+def main(project_dir):
     batch1 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-001/run-information-batch-001.csv"
     batch2 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-002/run-information-batch-002.csv"
+    OUT_PATH = project_dir / "combined_tables"
 
     logger.info("creating code_keys")
     code_keys = {}
@@ -219,10 +233,10 @@ def main():
 
     logger.info(code_keys)
     all_data = {}
-    LSU_data = parse_local_inventory("LSU", code_keys, folder=PROJECT_DIR / "results-tables/")
-    SSU_data = parse_local_inventory("SSU", code_keys, folder=PROJECT_DIR / "results-tables/")
-    go_data = go_tables("go", code_keys, folder=PROJECT_DIR / "results-tables/")
-    go_slim_data = go_tables("go_slim", code_keys, folder=PROJECT_DIR / "results-tables/")
+    LSU_data = parse_local_inventory("LSU", code_keys, folder=project_dir / "results-tables/")
+    SSU_data = parse_local_inventory("SSU", code_keys, folder=project_dir / "results-tables/")
+    go_data = go_tables("go", code_keys, folder=project_dir / "results-tables/")
+    go_slim_data = go_tables("go_slim", code_keys, folder=project_dir / "results-tables/")
     logger.info(f"Parsed {len(LSU_data)} rows from LSU data")
     logger.info(f"Parsed {len(SSU_data)} rows from SSU data")
     logger.info(f"Parsed {len(go_data)} rows from GO data")
@@ -255,6 +269,17 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent(desc),
+    )
+    (
+        parser.add_argument(
+            "target_directory",
+            help="Target directory where the all the extracted tables are organized per ref-code",
+        ),
+    )
+    args = parser.parse_args()
+    main(args.target_directory)
 
 

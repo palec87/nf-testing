@@ -6,8 +6,9 @@ include { unzipArchive } from './modules/unzip_archive.nf'
 
 // list of files
 params.files = "inp_files.csv"
-// params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"  // archive folder redi
-params.archives_root = "/media/davidp/Data/results"  // archive folder redi
+params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"  // archive folder redi
+// params.archives_root = "/media/davidp/Data/results"  // archive folder on local
+params.folder_extracted_tables = "${projectDir}/results-tables"
 
 
 // Remove chunks from the I5 files
@@ -73,11 +74,12 @@ process extractTables {
 // this does not work again because of the paths of inputs and outputs.
 process combineTables {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results-tables", mode: 'move'
+    publishDir "results-tables", mode: 'copy'
     debug true
 
     input:
     val ready
+    path folder_path
     path python_path
 
     output:
@@ -114,6 +116,6 @@ workflow {
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
 
-    combineTables(extractTables.out.trigger, python_combine_script)
+    combineTables(extractTables.out.trigger, params.folder_extracted_tables, python_combine_script)
     
 }
