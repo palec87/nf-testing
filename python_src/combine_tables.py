@@ -17,6 +17,7 @@ Combine tables in the specific extraction directory into a single tables
 """
 
 logger = logging.getLogger(name="CombineTables")
+logging.basicConfig(format="\t%(levelname)s: %(message)s", level=logging.INFO)
 # sys.path.append(str(PROJECT_DIR / "src"))
 
 # from minio import S3Error
@@ -56,15 +57,15 @@ VERSION = 2  # 11 Sept 2024
 
 
 # this just for the minio uploading parquet files, I should do the same I guess
-TABLES = [
-    "metagoflow_analyses.SSU",
-    "metagoflow_analyses.LSU",
-    # "metagoflow_analyses.go_slim",
-    # "metagoflow_analyses.go"
-    # "metagoflow_analyses.ips"
-    # "metagoflow_analyses.ko",
-    # "metagoflow_analyses.pfam"
-]
+# TABLES = [
+#     "metagoflow_analyses.SSU",
+#     "metagoflow_analyses.LSU",
+#     # "metagoflow_analyses.go_slim",
+#     # "metagoflow_analyses.go"
+#     # "metagoflow_analyses.ips"
+#     # "metagoflow_analyses.ko",
+#     # "metagoflow_analyses.pfam"
+# ]
 
 # The destination bucket and filename on the MinIO server
 bucket_name = "emo-bon-data"
@@ -295,5 +296,3 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     main(args.target_directory)
-
-

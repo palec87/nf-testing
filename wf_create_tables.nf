@@ -2,6 +2,7 @@
 
 include { readYAML } from './modules/read_yaml.nf'
 include { unzipArchive } from './modules/unzip_archive.nf'
+include { mergeI5 } from './modules/merge_i5_chunks.nf'
 
 
 // list of files
@@ -9,37 +10,6 @@ params.files = "inp_files.csv"
 params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"  // archive folder redi
 // params.archives_root = "/media/davidp/Data/results"  // archive folder on local
 params.folder_extracted_tables = "${projectDir}/results-tables"
-
-
-// Remove chunks from the I5 files
-// Concatenate the I5 files:
-// <prefix>.merged_CDS.I5_001.tsv.gz
-// <prefix>.merged_CDS.I5_002.tsv.gz
-// into:
-// <prefix>.merged_CDS.I5.tsv.gz
-
-// original structure, HMNJKDSX3:
-// |   |-- functional-annotation
-// |   |   |-- DBB.merged_CDS.I5_001.tsv.gz
-// |   |   |-- DBB.merged_CDS.I5_002.tsv.gz
-// |   |   |-- DBB.merged_CDS.I5.tsv.chunks
-
-process mergeI5 {
-    conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    debug true
-
-    input:
-    path python_path
-    path archive_name
-
-    // output:
-    // val identifier
-
-    script:
-    """
-    python ${python_path} -d ${archive_name} 
-    """
-}
 
 
 // I think this is the solution for the renaming problems too, or????
@@ -74,7 +44,7 @@ process extractTables {
 // this does not work again because of the paths of inputs and outputs.
 process combineTables {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    publishDir "results-tables", mode: 'copy'
+    // publishDir "results-tables", mode: 'copy'
     debug true
 
     input:
@@ -82,8 +52,8 @@ process combineTables {
     path folder_path
     path python_path
 
-    output:
-    path 'combined_tables/*'
+    // output:
+    // path 'combined_tables/*'
     
     script:
     """
@@ -115,7 +85,8 @@ workflow {
     mergeI5(python_merge_script, unzipArchive.out.archive_name)
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
-
+    
+    params.folder_extracted_tables.view()
     combineTables(extractTables.out.trigger, params.folder_extracted_tables, python_combine_script)
     
 }
