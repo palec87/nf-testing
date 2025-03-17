@@ -86,7 +86,7 @@ workflow {
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
     
-    params.folder_extracted_tables.view()
+    println(params.folder_extracted_tables)
     combineTables(extractTables.out.trigger, params.folder_extracted_tables, python_combine_script)
     
 }
