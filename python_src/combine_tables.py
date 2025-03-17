@@ -201,6 +201,7 @@ def go_tables(inv, code_keys, folder: Path = None):
             continue
 
         for _, row in csv_data.iterrows():
+            logger.info(f"GO: {row}")
             all_sample_data.append(
                 (val_tuple[0],              # ref_code
                 row[0],                     # id
