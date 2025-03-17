@@ -37,16 +37,18 @@ process extractTables {
     """
 }
 
+
+// this does not work again because of the paths of inputs and outputs.
 process combineTables {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    // publishDir "results-tables", mode: 'move'
+    publishDir "results-tables", mode: 'move'
 
     input:
     val ready
     path python_path
 
-    // output:
-    // path 'prepared_archives/*', emit: archive_name
+    output:
+    path 'combined_tables/*'
     
     script:
     """

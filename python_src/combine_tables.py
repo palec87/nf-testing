@@ -34,7 +34,7 @@ BATCH1AND2_TOTAL = 188
 
 # Expected number of metaGOflow analyses in version 1 of the data release
 EXPECTED_ANALYSES = 54
-OUT_PATH = PROJECT_DIR / "data_tables"
+OUT_PATH = PROJECT_DIR / "combined_tables"
 TAXONOMY_RANK_KEYS = {
     "sk": "superkingdom",
     "k": "kingdom",  # Note that prokaryotes do not have a kingdom entry
