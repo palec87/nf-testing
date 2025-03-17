@@ -6,8 +6,8 @@ include { unzipArchive } from './modules/unzip_archive.nf'
 
 // list of files
 params.files = "inp_files.csv"
-// Default parameter input
-params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"
+// params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"  // archive folder redi
+params.archives_root = "/media/davidp/Data/results"  // archive folder redi
 
 
 // Remove chunks from the I5 files
@@ -25,6 +25,7 @@ params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1an
 
 process mergeI5 {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
+    debug true
 
     input:
     path python_path
@@ -44,6 +45,7 @@ process mergeI5 {
 process extractTables {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
     publishDir "results-tables", mode: 'copy'
+    debug true
 
     input:
     path archive_name
@@ -61,6 +63,7 @@ process extractTables {
     cp ${archive_name}/results/functional-annotation/DBB.merged.summary.ips ${target_directory}-tables
     cp ${archive_name}/results/functional-annotation/DBB.merged.summary.ko ${target_directory}-tables
     cp ${archive_name}/results/functional-annotation/DBB.merged.summary.pfam ${target_directory}-tables
+    cp ${archive_name}/results/functional-annotation/DBB.merged_CDS.I5.tsv.gz ${target_directory}-tables
     cp ${archive_name}/results/taxonomy-summary/LSU/DBB.merged_LSU.fasta.mseq.tsv ${target_directory}-tables
     cp ${archive_name}/results/taxonomy-summary/SSU/DBB.merged_SSU.fasta.mseq.tsv ${target_directory}-tables
     """
@@ -71,6 +74,7 @@ process extractTables {
 process combineTables {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
     publishDir "results-tables", mode: 'move'
+    debug true
 
     input:
     val ready
