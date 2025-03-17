@@ -6,9 +6,8 @@ include { mergeI5 } from './modules/merge_i5_chunks.nf'
 
 
 // list of files
-params.files = "inp_files.csv"
+params.files = "inp_files_test.csv"
 params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"  // archive folder redi
-// params.archives_root = "/media/davidp/Data/results"  // archive folder on local
 params.folder_extracted_tables = "${projectDir}/results-tables"
 
 
@@ -40,7 +39,19 @@ process extractTables {
     """
 }
 
+// delete work files
+process deleteWorkFiles {
+    debug true
 
+    input:
+    val ready
+    path archive_name
+
+    script:
+    """
+    rm -rf ${archive_name}
+    """
+}
 // this does not work again because of the paths of inputs and outputs.
 process combineTables {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
@@ -85,7 +96,9 @@ workflow {
     mergeI5(python_merge_script, unzipArchive.out.archive_name)
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
-    
+
+    deleteWorkFiles(extractTables.out.trigger, unzipArchive.out.archive_name)
+
     println(params.folder_extracted_tables)
     combineTables(extractTables.out.trigger, params.folder_extracted_tables, python_combine_script)
     
