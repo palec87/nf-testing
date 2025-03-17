@@ -263,10 +263,12 @@ def main(project_dir):
     # create the output directory if it does not exist
     if not os.path.exists(OUT_PATH):
         os.makedirs(OUT_PATH)
-
+    logger.info("SAVING PATh for the combined table.")
+    logger.info(f"OUT_PATH: {OUT_PATH}")
+    logger.info(f"tables_folder: {tables_folder}")
     for path, table in all_data.items():
         logger.info("SAVING PATh for the combined table.")
-        logger.info(OUT_PATH.joinpath(f"{path}.csv"))
+        logger.info(os.path.join(OUT_PATH, f"{path}.csv"))
 
         table_df = pd.DataFrame.from_records(table)
         table_df.to_csv(os.path.join(OUT_PATH, f"{path}.csv"), index=False)
