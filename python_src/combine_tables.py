@@ -165,7 +165,7 @@ def parse_other_tax_tables(inv, code_keys, folder: Path = None):
         fn = f"{prefix}.merged.summary.{inv}"
         fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)  # this is the
         try:
-            csv_data = pd.read_csv(fp, sep="\t", skiprows=1)
+            csv_data = pd.read_csv(fp, header=None)
         except FileNotFoundError as e:
             continue
 
@@ -196,7 +196,7 @@ def go_tables(inv, code_keys, folder: Path = None):
         fn = f"{prefix}.merged.summary.{inv}"
         fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)  # this is the final path
         try:
-            csv_data = pd.read_csv(fp, sep="\t", skiprows=1)
+            csv_data = pd.read_csv(fp, header=None)
         except FileNotFoundError as e:
             continue
 
