@@ -36,27 +36,27 @@ process extractTables {
     cp ${archive_name}/results/functional-annotation/DBB.merged_CDS.I5.tsv.gz ${target_directory}-tables
     cp ${archive_name}/results/taxonomy-summary/LSU/DBB.merged_LSU.fasta.mseq.tsv ${target_directory}-tables
     cp ${archive_name}/results/taxonomy-summary/SSU/DBB.merged_SSU.fasta.mseq.tsv ${target_directory}-tables
+    """
+}
+
+// delete work files
+process deleteWorkFiles {
+    debug true
+
+    input:
+    val ready
+    path archive_name
+
+    script:
+    """
     rm -rf ${archive_name}
     """
 }
 
-// // delete work files
-// process deleteWorkFiles {
-//     debug true
 
-//     input:
-//     val ready
-//     path archive_name
-
-//     script:
-//     """
-//     rm -rf ${archive_name}
-//     """
-// }
 // this does not work again because of the paths of inputs and outputs.
 process combineTables {
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
-    // publishDir "results-tables", mode: 'copy'
     debug true
 
     input:
@@ -64,8 +64,7 @@ process combineTables {
     path folder_path
     path python_path
 
-    // output:
-    // path 'combined_tables/*'
+
     
     script:
     """
@@ -98,7 +97,7 @@ workflow {
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
 
-    // deleteWorkFiles(extractTables.out.trigger, unzipArchive.out.archive_name)
+    deleteWorkFiles(extractTables.out.trigger, unzipArchive.out.archive_name)
 
     println(params.folder_extracted_tables)
     combineTables(extractTables.out.trigger, params.folder_extracted_tables, python_combine_script)
