@@ -37,8 +37,9 @@ def find_archive(home_dir, subfolders, archive_name):
         if path.exists():
             tarball_files = list(path.glob("*.tar.bz2"))
             log.debug(f"Found {len(tarball_files)} tarball files")
-            log.debug(f"Looking for {tarball_files}")
-            if archive_name in tarball_files:
+            tarball_file_names = [f.name for f in tarball_files]
+            log.debug(f"Looking for {archive_name}in {tarball_file_names}")
+            if archive_name in tarball_file_names:
                 return path
     return None
 
