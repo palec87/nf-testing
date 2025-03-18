@@ -208,6 +208,7 @@ def read_yaml(yaml_config):
                 log.error("Bailing...")
                 sys.exit()
     log.info("YAML configuration looks good...")
+    log.info(f"Configuration file: {conf}")
     return conf
 
 
