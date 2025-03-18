@@ -99,7 +99,7 @@ workflow {
 
     extractTables(unzipArchive.out.archive_name, ch_newArchive)
 
-    // deleteWorkFiles(extractTables.out.trigger, unzipArchive.out.archive_name)
+    deleteWorkFiles(extractTables.out.trigger, unzipArchive.out.archive_name)
 
     println(params.folder_extracted_tables)
     combineTables(extractTables.out.trigger, params.folder_extracted_tables, python_combine_script)
