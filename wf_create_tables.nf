@@ -7,7 +7,7 @@ include { mergeI5 } from './modules/merge_i5_chunks.nf'
 
 // list of files
 params.files = "inp_files_test.csv"
-params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data/FILTERS"  // archive folder redi
+params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data"  // archive folder redi
 params.folder_extracted_tables = "${projectDir}/results-tables"
 
 

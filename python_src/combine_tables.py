@@ -68,7 +68,6 @@ VERSION = 2  # 11 Sept 2024
 # ]
 
 # The destination bucket and filename on the MinIO server
-bucket_name = "emo-bon-data"
 def extract_keys(data):
     d = {}
     for _, row in data.iterrows():
