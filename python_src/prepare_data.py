@@ -33,8 +33,11 @@ FILE_PATTERNS = [
 def find_archive(home_dir, subfolders, archive_name):
     for subfolder in subfolders:
         path = Path(home_dir, subfolder)
+        log.debug(f"Checking {path}")
         if path.exists():
             tarball_files = list(path.glob("*.tar.bz2"))
+            log.debug(f"Found {len(tarball_files)} tarball files")
+            log.debug(f"Looking for {tarball_files}")
             if archive_name in tarball_files:
                 return path
     return None
