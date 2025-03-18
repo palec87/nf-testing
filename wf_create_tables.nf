@@ -30,14 +30,14 @@ process extractTables {
     script:
     """
     mkdir -p ${target_directory}-tables
-    cp ${archive_name}/results/functional-annotation/DBB.merged.summary.go ${target_directory}-tables
-    cp ${archive_name}/results/functional-annotation/DBB.merged.summary.go_slim ${target_directory}-tables
-    cp ${archive_name}/results/functional-annotation/DBB.merged.summary.ips ${target_directory}-tables
-    cp ${archive_name}/results/functional-annotation/DBB.merged.summary.ko ${target_directory}-tables
-    cp ${archive_name}/results/functional-annotation/DBB.merged.summary.pfam ${target_directory}-tables
-    cp ${archive_name}/results/functional-annotation/DBB.merged_CDS.I5.tsv.gz ${target_directory}-tables
-    cp ${archive_name}/results/taxonomy-summary/LSU/DBB.merged_LSU.fasta.mseq.tsv ${target_directory}-tables
-    cp ${archive_name}/results/taxonomy-summary/SSU/DBB.merged_SSU.fasta.mseq.tsv ${target_directory}-tables
+    cp ${archive_name}/results/functional-annotation/*.merged.summary.go ${target_directory}-tables
+    cp ${archive_name}/results/functional-annotation/*.merged.summary.go_slim ${target_directory}-tables
+    cp ${archive_name}/results/functional-annotation/*.merged.summary.ips ${target_directory}-tables
+    cp ${archive_name}/results/functional-annotation/*.merged.summary.ko ${target_directory}-tables
+    cp ${archive_name}/results/functional-annotation/*.merged.summary.pfam ${target_directory}-tables
+    cp ${archive_name}/results/functional-annotation/*.merged_CDS.I5.tsv.gz ${target_directory}-tables
+    cp ${archive_name}/results/taxonomy-summary/LSU/*.merged_LSU.fasta.mseq.tsv ${target_directory}-tables
+    cp ${archive_name}/results/taxonomy-summary/SSU/*.merged_SSU.fasta.mseq.tsv ${target_directory}-tables
     """
 }
 
