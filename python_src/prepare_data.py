@@ -55,10 +55,12 @@ def main(
     # check first which folder contains the archive
     home_dir = Path.cwd()
     subfolders = ["BLANKS", "FILTERS", "MOCKS", "SEDIMENTS"]
+    target_directory = Path(home_dir, target_directory)
+    log.debug(f"Looking for {archive_name} in {target_directory}")
 
-    target_directory = find_archive(home_dir, subfolders, archive_name)
+    target_directory = find_archive(target_directory, subfolders, archive_name)
     if not target_directory:
-        log.error(f"Cannot find the target directory for {archive_name}")
+        log.error(f"Cannot find the target directory for {archive_name} in {target_directory}")
         sys.exit()
 
     log.debug(f"Found target directory {target_directory}")
