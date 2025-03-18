@@ -6,6 +6,7 @@ include { mergeI5 } from './modules/merge_i5_chunks.nf'
 
 
 // list of files
+// this one gives problesm, HCFCYDSX5.UDI137.tar.bz2
 params.files = "inp_files_test.csv"
 params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data"  // archive folder redi
 params.folder_extracted_tables = "${projectDir}/results-tables"
