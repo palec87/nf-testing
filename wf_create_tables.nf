@@ -1,17 +1,19 @@
 #!/usr/bin/env nextflow
 
+// PROBLEMATIC FILES
+// this one gives problesm, HCFCYDSX5.UDI137.tar.bz2: I still do not know why
+// DBB_AAAJOSDA_4_HMGW5DSX3.UDI217.zip, HCMR data missing functional annotation
+
 include { readYAML } from './modules/read_yaml.nf'
 include { unzipArchive } from './modules/unzip_archive.nf'
 include { mergeI5 } from './modules/merge_i5_chunks.nf'
 
 
 // list of files
-// this one works, H5H2YDSX7.UDI239.tar.bz2
-// this one gives problesm, HCFCYDSX5.UDI137.tar.bz2: I still do not know why
 params.files = "inp_files.csv"
 params.folder_extracted_tables = "${projectDir}/results-tables"
 
-// setup for ccmar data
+// setup for CCMAR data
 // params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data"  // archive folder redi
 
 // setup for HCMR data
