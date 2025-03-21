@@ -37,9 +37,9 @@ def find_archive(home_dir, subfolders, archive_name):
         if path.exists():
             archive_files = list(path.glob("*.tar.bz2")) + list(path.glob("*.zip"))
             log.debug(f"Found {len(archive_files)} tarball files")
-            tarball_file_names = [f.name for f in archive_files]
-            log.debug(f"Looking for {archive_name}in {tarball_file_names}")
-            if archive_name in tarball_file_names:
+            archive_file_names = [f.name for f in archive_files]
+            log.debug(f"Looking for {archive_name}in {archive_file_names}")
+            if archive_name in archive_file_names:
                 return path
     return None
 
@@ -49,6 +49,7 @@ def main(
     archive_name,
     out_dir=os.getcwd(),
     debug=False,
+    hcmr=False,
 ):
     log.basicConfig(
         format="\t%(levelname)s: %(message)s", level=log.DEBUG if debug else log.INFO
@@ -104,29 +105,37 @@ def main(
     for fp in FILE_PATTERNS:
         sf = Path("./").glob(fp)
         for f in sf:
-            log.debug(f"Compressing {f}")
-            # Can't use f{} style formatting in subprocess call
-            # of the program name
-            if bzip2_program == "lbzip2":
-                threads = psutil.cpu_count() - 4
-                log.debug(f"Using lbzip2 with {threads} threads")
+            if hcmr:
                 subprocess.check_call(
                     [
-                        "lbzip2",
-                        "-9",
-                        f"-n {threads}",
+                        "unzip",
                         f"./{f}",
                     ]
                 )
-            elif bzip2_program == "bzip2":
-                log.debug(f"bzip2 -9 {f}")
-                subprocess.check_call(
-                    [
-                        "bzip2",
-                        "-9",
-                        f"./{f}",
-                    ]
-                )
+            else:
+                log.debug(f"Compressing {f}")
+                # Can't use f{} style formatting in subprocess call
+                # of the program name
+                if bzip2_program == "lbzip2":
+                    threads = psutil.cpu_count() - 4
+                    log.debug(f"Using lbzip2 with {threads} threads")
+                    subprocess.check_call(
+                        [
+                            "lbzip2",
+                            "-9",
+                            f"-n {threads}",
+                            f"./{f}",
+                        ]
+                    )
+                elif bzip2_program == "bzip2":
+                    log.debug(f"bzip2 -9 {f}")
+                    subprocess.check_call(
+                        [
+                            "bzip2",
+                            "-9",
+                            f"./{f}",
+                        ]
+                    )
 
     log.debug(f"Moving to {target_directory}")
     os.chdir(target_directory)
@@ -152,10 +161,16 @@ if __name__ == "__main__":
         default=os.getcwd(),
     )
     parser.add_argument("-d", "--debug", action="store_true", help="DEBUG logging")
+    parser.add_argument(
+        "--hcmr",
+        action="store_true",
+        help="Use this flag to process HCMR data",
+    )
     args = parser.parse_args()
     main(
         args.target_directory,
         args.archive_name,
         args.out_dir,
         args.debug,
+        args.hcmr,
     )
