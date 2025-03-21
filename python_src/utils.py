@@ -68,7 +68,10 @@ def open_archive(tarball_file, bzip2_program, outpath=None, hcmr=False):
             ]
         )
     # Check archive
-    run_id = Path(str(tarball_file).split('/')[-1].rsplit(".", 2)[0])
+    if hcmr:
+        run_id = Path(str(tarball_file).split('/')[-1].rsplit(".", 1)[0].split("_")[-1])
+    else:
+        run_id = Path(str(tarball_file).split('/')[-1].rsplit(".", 2)[0])
     log.debug(f"run_id = {run_id}")
     if run_id.exists():
         os.chdir("..")
