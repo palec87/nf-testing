@@ -3,6 +3,7 @@
 // PROBLEMATIC FILES
 // this one gives problesm, HCFCYDSX5.UDI137.tar.bz2: I still do not know why
 // DBB_AAAJOSDA_4_HMGW5DSX3.UDI217.zip, HCMR data missing functional annotation
+// HMGW5DSX3.UDI229.zip, HCMR data missing functional annotation
 
 include { readYAML } from './modules/read_yaml.nf'
 include { unzipArchive } from './modules/unzip_archive.nf'
