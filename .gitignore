@@ -42,3 +42,5 @@ wave-tests
 x/*
 tutorial/*
 credentials.json
+work/
+.nextflow*
