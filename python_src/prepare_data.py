@@ -96,7 +96,7 @@ def main(
     else:
         # Open the archive
         log.info(f"Opening archive {archive_name}")
-        open_archive(os.path.abspath(archive_name), bzip2_program, outpath)
+        open_archive(os.path.abspath(archive_name), bzip2_program, outpath, hcmr)
 
     # Compress the sequence archive files
     log.info(f"Compressing sequence files for {run_id}")
@@ -105,37 +105,29 @@ def main(
     for fp in FILE_PATTERNS:
         sf = Path("./").glob(fp)
         for f in sf:
-            if hcmr:
+            log.debug(f"Compressing {f}")
+            # Can't use f{} style formatting in subprocess call
+            # of the program name
+            if bzip2_program == "lbzip2":
+                threads = psutil.cpu_count() - 4
+                log.debug(f"Using lbzip2 with {threads} threads")
                 subprocess.check_call(
                     [
-                        "unzip",
+                        "lbzip2",
+                        "-9",
+                        f"-n {threads}",
                         f"./{f}",
                     ]
                 )
-            else:
-                log.debug(f"Compressing {f}")
-                # Can't use f{} style formatting in subprocess call
-                # of the program name
-                if bzip2_program == "lbzip2":
-                    threads = psutil.cpu_count() - 4
-                    log.debug(f"Using lbzip2 with {threads} threads")
-                    subprocess.check_call(
-                        [
-                            "lbzip2",
-                            "-9",
-                            f"-n {threads}",
-                            f"./{f}",
-                        ]
-                    )
-                elif bzip2_program == "bzip2":
-                    log.debug(f"bzip2 -9 {f}")
-                    subprocess.check_call(
-                        [
-                            "bzip2",
-                            "-9",
-                            f"./{f}",
-                        ]
-                    )
+            elif bzip2_program == "bzip2":
+                log.debug(f"bzip2 -9 {f}")
+                subprocess.check_call(
+                    [
+                        "bzip2",
+                        "-9",
+                        f"./{f}",
+                    ]
+                )
 
     log.debug(f"Moving to {target_directory}")
     os.chdir(target_directory)

@@ -30,7 +30,7 @@ def find_bzip2():
     return bzip2_program
 
 
-def open_archive(tarball_file, bzip2_program, outpath=None):
+def open_archive(tarball_file, bzip2_program, outpath=None, hcmr=False):
     """
     You are expected to be in the dir with the tarball when calling this function
     """
@@ -48,15 +48,23 @@ def open_archive(tarball_file, bzip2_program, outpath=None):
     os.chdir("temp")
     log.debug(f"Opening archive {tarball_file} with {bzip2_program}")
     # tar --use-compress-program lbunzip2 -xvf ../HMNJKDSX3.UDI200.tar.bz2
-    subprocess.check_call(
-        [
-            "tar",
-            "--use-compress-program",
-            f"{bzip2_program}",
-            "-xf",
-            f"{tarball_file}",
-        ]
-    )
+    if hcmr:
+        subprocess.check_call(
+                        [
+                            "unzip",
+                            f"./{tarball_file}",
+                        ]
+                    )
+    else:
+        subprocess.check_call(
+            [
+                "tar",
+                "--use-compress-program",
+                f"{bzip2_program}",
+                "-xf",
+                f"{tarball_file}",
+            ]
+        )
     # Check archive
     run_id = Path(str(tarball_file).split('/')[-1].rsplit(".", 2)[0])
     log.debug(f"run_id = {run_id}")
