@@ -5,6 +5,7 @@
 // DBB_AAAJOSDA_4_HMGW5DSX3.UDI217.zip, HCMR data missing functional annotation
 // HMGW5DSX3.UDI229.zip, HCMR data missing functional annotation
 // DBB_AAAMOSDA_4_HMGW5DSX3.UDI241.zip, HCMR, missing chuncks data to sucessfully merge I5 files
+// HMGW5DSX3.UDI253 no functional annotation
 
 include { readYAML } from './modules/read_yaml.nf'
 include { unzipArchive } from './modules/unzip_archive.nf'
