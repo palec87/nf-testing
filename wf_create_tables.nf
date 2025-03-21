@@ -9,8 +9,13 @@ include { mergeI5 } from './modules/merge_i5_chunks.nf'
 // this one works, H5H2YDSX7.UDI239.tar.bz2
 // this one gives problesm, HCFCYDSX5.UDI137.tar.bz2: I still do not know why
 params.files = "inp_files.csv"
-params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data"  // archive folder redi
 params.folder_extracted_tables = "${projectDir}/results-tables"
+
+// setup for ccmar data
+// params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data"  // archive folder redi
+
+// setup for HCMR data
+params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/HCMR-data/data"  // archive folder redi
 
 
 // I think this is the solution for the renaming problems too, or????

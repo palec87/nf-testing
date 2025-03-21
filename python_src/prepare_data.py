@@ -55,7 +55,9 @@ def main(
     )
     # check first which folder contains the archive
     home_dir = Path.cwd()
-    subfolders = ["BLANKS", "FILTERS", "MOCKS", "SEDIMENTS"]
+    subfolders = ["BLANKS", "FILTERS", "MOCKS", "SEDIMENTS",  # CCMARs data
+                  "220223_JARVIS_HWLTKDRXY", "220622_JARVIS_HMGW5DSX3", "220712_JARVIS_HMNJKDSX3",  # HCMR data
+                  ]
     target_directory = Path(home_dir, target_directory)
     log.debug(f"Looking for {archive_name} in {target_directory}")
 
