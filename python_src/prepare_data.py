@@ -85,7 +85,7 @@ def main(
     bzip2_program = find_bzip2()
     if hcmr:
         log.debug("HCMR data")
-        run_id = Path(str("DBB_AACDOSDA_4_HMGW5DSX3.UDI240.zip").rsplit(".", 1)[0].split("_")[-1])
+        run_id = Path(str(archive_name).rsplit(".", 1)[0].split("_")[-1])
     else:
         run_id = Path(str(archive_name).rsplit(".", 2)[0])
 
