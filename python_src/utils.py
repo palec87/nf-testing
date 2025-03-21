@@ -46,16 +46,18 @@ def open_archive(tarball_file, bzip2_program, outpath=None, hcmr=False):
         log.error("Exiting...")
         sys.exit()
     os.chdir("temp")
-    log.debug(f"Opening archive {tarball_file} with {bzip2_program}")
+    
     # tar --use-compress-program lbunzip2 -xvf ../HMNJKDSX3.UDI200.tar.bz2
     if hcmr:
+        log.debug(f"Opening archive {tarball_file} with unzip")
         subprocess.check_call(
-                        [
-                            "unzip",
-                            f"./{tarball_file}",
-                        ]
-                    )
+            [
+                "unzip",
+                f"{tarball_file}",
+            ]
+        )
     else:
+        log.debug(f"Opening archive {tarball_file} with {bzip2_program}")
         subprocess.check_call(
             [
                 "tar",
