@@ -88,6 +88,6 @@ if __name__ == "__main__":
             ret = os.system(f"cp {os.path.join(path, 'functional-annotation', 'DBB.merged.summary.go')} {out_folder}")
             if ret != 0:
                 print('File not found')
-                missing_data.append(reads_name, 'DBB.merged.summary.go')
+                missing_data.append((reads_name, 'DBB.merged.summary.go'))
 
             print(missing_data)
