@@ -113,3 +113,4 @@ if __name__ == "__main__":
 
 
     print(missing_data)
+    print(set([k[0] for k in missing_data]))
