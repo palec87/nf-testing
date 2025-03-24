@@ -13,7 +13,8 @@ for subfolder in SUBFOLDERS:
     # list folders in subfolder
     folders = os.listdir(subfolder_path)
     print("####### 1. layer folders ######")
-    print('subfolders', folders)
+    print('subfolder', subfolder)
+    print("###############################")
 
     folders_to_keep = []
     for folder in folders:
@@ -33,12 +34,17 @@ for subfolder in SUBFOLDERS:
     folders_to_keep2 = []
     print(folders_to_keep)
     for folder in folders_to_keep:
-        if "DBH" in str(folder) or "DBB" in str(folder):
+        if "DBH" in str(folder) or "DBB" in str(folder) and ".zip" not in str(folder):
             folders_to_keep2.append(folder)
             continue
         if "results" not in str(folder):
             continue
 
         # this is already the archive
-        parent_folder = os.path.join(subfolder_path, folder).split("/")[-1].split("_")[-1] 
+        parent_folder = folder.split("/")[-1].split("_")[-1]
         print('parent folder', parent_folder, 'of', folder)
+
+    if len(folders_to_keep2) > 0:
+        raise ValueError(f"There are still folders to keep: {folders_to_keep2}")
+    
+
