@@ -70,13 +70,16 @@ if __name__ == "__main__":
         for path in top_paths:
             reads_name = path.split("/")[-2].split("_")[-1]
             print('Reads name', reads_name, 'of', path)
+            if '.' not in reads_name:
+                print('Skippint invalid archive name')
+                continue
 
             # search for the sample in the batch run information
             ans = find_sample(reads_name)
             print(ans)
 
             # create folder with the reads name
-            out_folder = os.path.join(OUT_PATH, f"{ans['ref_code']}-tables")
+            out_folder = os.path.join(OUT_PATH, f"{ans['source_mat_id']}-tables")
             os.makedirs(out_folder, exist_ok=True)
 
             # move some files
