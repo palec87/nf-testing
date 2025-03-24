@@ -79,7 +79,7 @@ if __name__ == "__main__":
             print(ans)
 
             # create folder with the reads name
-            out_folder = os.path.join(OUT_PATH, f"{ans['source_mat_id']}-tables")
+            out_folder = os.path.join(OUT_PATH, f"{ans['source_mat_id'].str}-tables")
             os.makedirs(out_folder, exist_ok=True)
             print(out_folder)
 
