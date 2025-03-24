@@ -66,7 +66,7 @@ if __name__ == "__main__":
         # extract archive name from the parent folder
         for path in top_paths:
             reads_name = path.split("/")[-2].split("_")[-1]
-            print('Reads name', reads_name, 'of', path)
+            # print('Reads name', reads_name, 'of', path)
             if '.' not in reads_name:
                 print('Skippint invalid archive name')
                 continue
