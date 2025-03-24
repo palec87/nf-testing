@@ -55,7 +55,7 @@ def find_sample(search_string):
 
 # Example usage
 if __name__ == "__main__":
-
+    missing_data = []
     for folder in SUBFOLDERS:
         base_directory = os.path.join(ROOT_FOLDER, folder)
         paths = extract_results_paths(base_directory)
@@ -76,13 +76,19 @@ if __name__ == "__main__":
 
             # search for the sample in the batch run information
             ans = find_sample(reads_name)
-            print(ans)
+            # print(ans)
 
             # create folder with the reads name
             out_folder = os.path.join(OUT_PATH, f"{ans['source_mat_id'].values[0]}-tables")
             os.makedirs(out_folder, exist_ok=True)
-            print(out_folder)
+            # print(out_folder)
 
             # move some files
             # move the file with the reads name
-            os.system(f"cp {os.path.join(path, "functional-annotation", "DBB.merged.summary.go")} {out_folder}")
+            try:
+                os.system(f"cp {os.path.join(path, 'functional-annotation', 'DBB.merged.summary.go')} {out_folder}")
+            except:
+                print('File not found')
+                missing_data.append(reads_name, 'DBB.merged.summary.go')
+
+            print(missing_data)
