@@ -74,4 +74,6 @@ if __name__ == "__main__":
         base_directory = os.path.join(ROOT_FOLDER, folder)
         paths = extract_results_paths(base_directory)
         for path in paths:
-            print(path)
+            # match paths where there is no subfolder of results
+            if path.split('/')[-1] == 'results':
+                print(path)
