@@ -73,7 +73,14 @@ if __name__ == "__main__":
     for folder in SUBFOLDERS:
         base_directory = os.path.join(ROOT_FOLDER, folder)
         paths = extract_results_paths(base_directory)
+
+        top_paths = []
         for path in paths:
             # match paths where there is no subfolder of results
             if path.split('/')[-1] == 'results':
-                print(path)
+                top_paths.append(path)
+
+        # extract archive name from the parent folder
+        for path in top_paths:
+            parent_folder = path.split("/")[-2].split("_")[-1]
+            print('parent folder', parent_folder, 'of', path)
