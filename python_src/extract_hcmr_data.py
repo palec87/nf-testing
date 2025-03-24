@@ -7,47 +7,47 @@ SUBFOLDERS = ["220223_JARVIS_HWLTKDRXY",
               "220712_JARVIS_HMNJKDSX3",
 ]
 
-for subfolder in SUBFOLDERS:
-    subfolder_path = os.path.join(ROOT_FOLDER, subfolder)
-    # print(subfolder_path)
-    # list folders in subfolder
-    folders = os.listdir(subfolder_path)
-    print("####### 1. layer folders ######")
-    print('subfolder', subfolder)
-    print("###############################")
+# for subfolder in SUBFOLDERS:
+#     subfolder_path = os.path.join(ROOT_FOLDER, subfolder)
+#     # print(subfolder_path)
+#     # list folders in subfolder
+#     folders = os.listdir(subfolder_path)
+#     print("####### 1. layer folders ######")
+#     print('subfolder', subfolder)
+#     print("###############################")
 
-    folders_to_keep = []
-    for folder in folders:
-        if "DBH" in str(folder) or "DBB" in str(folder):
-            folders_to_keep.append(folder)
-            continue
-        if "results" not in (folder):
-            continue
+#     folders_to_keep = []
+#     for folder in folders:
+#         if "DBH" in str(folder) or "DBB" in str(folder):
+#             folders_to_keep.append(folder)
+#             continue
+#         if "results" not in (folder):
+#             continue
 
-        # this is already the archive
+#         # this is already the archive
 
-        parent_folder = subfolder_path.split("/")[-1].split("_")[-1] 
-        print('parent folder', parent_folder, 'of', folder)
+#         parent_folder = subfolder_path.split("/")[-1].split("_")[-1] 
+#         print('parent folder', parent_folder, 'of', folder)
 
-    #next layer
-    print("####### 2. layer folders ######")
-    folders_to_keep2 = []
-    print(folders_to_keep)
-    for folder in folders_to_keep:
-        print(os.listdir(os.path.join(subfolder_path, folder)))
-        if "DBH" in str(folder) or "DBB" in str(folder) and ".zip" not in str(folder):
-            folders_to_keep2.append(folder)
-            continue
-        if "results" not in str(folder):
-            continue
+#     #next layer
+#     print("####### 2. layer folders ######")
+#     folders_to_keep2 = []
+#     print(folders_to_keep)
+#     for folder in folders_to_keep:
+#         print(os.listdir(os.path.join(subfolder_path, folder)))
+#         if "DBH" in str(folder) or "DBB" in str(folder) and ".zip" not in str(folder):
+#             folders_to_keep2.append(folder)
+#             continue
+#         if "results" not in str(folder):
+#             continue
 
-        # this is already the archive
-        parent_folder = folder.split("/")[-1].split("_")[-1]
-        print('parent folder', parent_folder, 'of', folder)
+#         # this is already the archive
+#         parent_folder = folder.split("/")[-1].split("_")[-1]
+#         print('parent folder', parent_folder, 'of', folder)
 
-    if len(folders_to_keep2) > 0:
-        print("Folders to keep: ", folders_to_keep2)
-        raise ValueError(f"There are still folders to keep")
+#     if len(folders_to_keep2) > 0:
+#         print("Folders to keep: ", folders_to_keep2)
+#         raise ValueError(f"There are still folders to keep")
     
 
 ## write a function to extract wll absolute paths which contain directory /results
