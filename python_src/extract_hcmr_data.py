@@ -64,8 +64,8 @@ def extract_results_paths(base_dir):
         if '/results' in root:
             results_paths.append(os.path.abspath(root))
             # Add all subdirectories under the current '/results' directory
-            for subdir in dirs:
-                results_paths.append(os.path.abspath(os.path.join(root, subdir)))
+            # for subdir in dirs:
+            #     results_paths.append(os.path.abspath(os.path.join(root, subdir)))
     return results_paths
 
 # Example usage
