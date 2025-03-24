@@ -16,7 +16,7 @@ for subfolder in SUBFOLDERS:
     print(folders)
 
     folders_to_keep = []
-    for folder in folders:
+    for folder in os.path.abspath(folders):
         if "DBH" or "DBB" in folder:
             folders_to_keep.append(folder)
             continue
@@ -30,7 +30,7 @@ for subfolder in SUBFOLDERS:
     #next layer
     print("####### 2. layer folders ######")
     print(folders_to_keep)
-    for folder in folders_to_keep:
+    for folder in os.path.abspath(folders_to_keep):
         if "DBH" or "DBB" in folder:
             folders_to_keep.append(folder)
             continue
