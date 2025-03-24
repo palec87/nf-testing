@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 
 
 ROOT_FOLDER = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/HCMR-data/data"
@@ -7,47 +8,16 @@ SUBFOLDERS = ["220223_JARVIS_HWLTKDRXY",
               "220712_JARVIS_HMNJKDSX3",
 ]
 
-# for subfolder in SUBFOLDERS:
-#     subfolder_path = os.path.join(ROOT_FOLDER, subfolder)
-#     # print(subfolder_path)
-#     # list folders in subfolder
-#     folders = os.listdir(subfolder_path)
-#     print("####### 1. layer folders ######")
-#     print('subfolder', subfolder)
-#     print("###############################")
+OUT_PATH = "/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/reuslts-hcmr"
 
-#     folders_to_keep = []
-#     for folder in folders:
-#         if "DBH" in str(folder) or "DBB" in str(folder):
-#             folders_to_keep.append(folder)
-#             continue
-#         if "results" not in (folder):
-#             continue
-
-#         # this is already the archive
-
-#         parent_folder = subfolder_path.split("/")[-1].split("_")[-1] 
-#         print('parent folder', parent_folder, 'of', folder)
-
-#     #next layer
-#     print("####### 2. layer folders ######")
-#     folders_to_keep2 = []
-#     print(folders_to_keep)
-#     for folder in folders_to_keep:
-#         print(os.listdir(os.path.join(subfolder_path, folder)))
-#         if "DBH" in str(folder) or "DBB" in str(folder) and ".zip" not in str(folder):
-#             folders_to_keep2.append(folder)
-#             continue
-#         if "results" not in str(folder):
-#             continue
-
-#         # this is already the archive
-#         parent_folder = folder.split("/")[-1].split("_")[-1]
-#         print('parent folder', parent_folder, 'of', folder)
-
-#     if len(folders_to_keep2) > 0:
-#         print("Folders to keep: ", folders_to_keep2)
-#         raise ValueError(f"There are still folders to keep")
+BATCH1_RUN_INFO_PATH = (
+    "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/"
+    "batch-001/run-information-batch-001.csv"
+)
+BATCH2_RUN_INFO_PATH = (
+    "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/"
+    "batch-002/run-information-batch-002.csv"
+)
     
 
 ## write a function to extract wll absolute paths which contain directory /results
@@ -68,8 +38,23 @@ def extract_results_paths(base_dir):
             #     results_paths.append(os.path.abspath(os.path.join(root, subdir)))
     return results_paths
 
+# search_string = "DBB_AACDOSDA_4_HMGW5DSX3"
+def find_sample(search_string):
+    for i, batch in enumerate([BATCH1_RUN_INFO_PATH, BATCH2_RUN_INFO_PATH]):
+        df = pd.read_csv(BATCH1_RUN_INFO_PATH)
+        df1 = df[["reads_name", "ref_code", "source_mat_id"]]
+
+        # replace nan with empty string
+        df1 = df1.replace(np.nan, '', regex=True)
+        ans = df1[df1['reads_name'].str.contains(search_string)]
+        if not ans.empty:
+            return ans
+    return None
+
+
 # Example usage
 if __name__ == "__main__":
+
     for folder in SUBFOLDERS:
         base_directory = os.path.join(ROOT_FOLDER, folder)
         paths = extract_results_paths(base_directory)
@@ -82,5 +67,17 @@ if __name__ == "__main__":
 
         # extract archive name from the parent folder
         for path in top_paths:
-            parent_folder = path.split("/")[-2].split("_")[-1]
-            print('parent folder', parent_folder, 'of', path)
+            reads_name = path.split("/")[-2].split("_")[-1]
+            print('Reads name', reads_name, 'of', path)
+
+            # search for the sample in the batch run information
+            ans = find_sample(reads_name)
+            print(ans)
+
+            # create folder with the reads name
+            out_folder = os.path.join(OUT_PATH, f"{ans['ref_code']}-tables")
+            os.makedirs(out_folder, exist_ok=True)
+
+            # move some files
+            # move the file with the reads name
+            os.system(f"cp {os.path.join(path, "functional-annotation", "DBB.merged.summary.go")} {out_folder}")
