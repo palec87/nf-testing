@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 
 
 ROOT_FOLDER = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/HCMR-data/data"
