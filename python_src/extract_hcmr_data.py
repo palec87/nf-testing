@@ -81,6 +81,7 @@ if __name__ == "__main__":
             # create folder with the reads name
             out_folder = os.path.join(OUT_PATH, f"{ans['source_mat_id']}-tables")
             os.makedirs(out_folder, exist_ok=True)
+            print(out_folder)
 
             # move some files
             # move the file with the reads name
