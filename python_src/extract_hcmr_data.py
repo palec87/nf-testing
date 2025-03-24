@@ -9,7 +9,7 @@ SUBFOLDERS = ["220223_JARVIS_HWLTKDRXY",
               "220712_JARVIS_HMNJKDSX3",
 ]
 
-OUT_PATH = "/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/reuslts-hcmr"
+OUT_PATH = "/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/results-hcmr"
 
 BATCH1_RUN_INFO_PATH = (
     "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/"
