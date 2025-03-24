@@ -85,10 +85,8 @@ if __name__ == "__main__":
 
             # move some files
             # move the file with the reads name
-            try:
-                ret = os.system(f"cp {os.path.join(path, 'functional-annotation', 'DBB.merged.summary.go')} {out_folder}")
-                print(ret)
-            except:
+            ret = os.system(f"cp {os.path.join(path, 'functional-annotation', 'DBB.merged.summary.go')} {out_folder}")
+            if ret != 0:
                 print('File not found')
                 missing_data.append(reads_name, 'DBB.merged.summary.go')
 
