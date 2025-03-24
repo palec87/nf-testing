@@ -34,9 +34,6 @@ def extract_results_paths(base_dir):
     for root, dirs, files in os.walk(base_dir):
         if '/results' in root:
             results_paths.append(os.path.abspath(root))
-            # Add all subdirectories under the current '/results' directory
-            # for subdir in dirs:
-            #     results_paths.append(os.path.abspath(os.path.join(root, subdir)))
     return results_paths
 
 # search_string = "DBB_AACDOSDA_4_HMGW5DSX3"
@@ -84,10 +81,35 @@ if __name__ == "__main__":
             # print(out_folder)
 
             # move some files
-            # move the file with the reads name
             ret = os.system(f"cp {os.path.join(path, 'functional-annotation', 'DBB.merged.summary.go')} {out_folder}")
             if ret != 0:
-                print('File not found')
                 missing_data.append((reads_name, 'DBB.merged.summary.go'))
+
+            ret = os.system(f"cp {os.path.join(path, 'functional-annotation', 'DBB.merged.summary.pfam')} {out_folder}")
+            if ret != 0:
+                missing_data.append((reads_name, 'DBB.merged.summary.pfam'))
+
+            ret = os.system(f"cp {os.path.join(path, 'functional-annotation', 'DBB.merged.summary.go_slim')} {out_folder}")
+            if ret != 0:
+                missing_data.append((reads_name, 'DBB.merged.summary.go_slim'))
+
+            ret = os.system(f"cp {os.path.join(path, 'functional-annotation', 'DBB.merged.summary.ips')} {out_folder}")
+            if ret != 0:
+                missing_data.append((reads_name, 'DBB.merged.summary.ips'))
+
+            ret = os.system(f"cp {os.path.join(path, 'functional-annotation', 'DBB.merged.summary.ko')} {out_folder}")
+            if ret != 0:
+                missing_data.append((reads_name, 'DBB.merged.summary.ko'))
+
+            # taxonomy
+            ret = os.system(f"cp {os.path.join(path, 'taxonomy-summary', "LSU", "DBB.merged_LSU.fasta.mseq.tsv")} {out_folder}")
+            if ret != 0:
+                missing_data.append((reads_name, 'DBB.merged_LSU.fasta.mseq.tsv'))
+
+            ret = os.system(f"cp {os.path.join(path, 'taxonomy-summary', "SSU", "DBB.merged_SSU.fasta.mseq.tsv")} {out_folder}")
+            if ret != 0:
+                missing_data.append((reads_name, 'DBB.merged_SSU.fasta.mseq.tsv'))
+
+
 
             print(missing_data)
