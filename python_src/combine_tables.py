@@ -185,7 +185,7 @@ def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folders: l
     return all_objs_data
 
 
-def parse_other_tax_tables(inv, code_keys, folder: Path = None):
+def parse_other_tax_tables(inv, code_keys, folders: list[Path] = None):
     """
     Parse IPS/KEGG/pfam summary files
     """
@@ -196,7 +196,18 @@ def parse_other_tax_tables(inv, code_keys, folder: Path = None):
 
         prefix = val_tuple[1]           # like DBB etc
         fn = f"{prefix}.merged.summary.{inv}"
-        fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)  # this is the
+        fps = [os.path.join(folder, f"{val_tuple[2]}-tables", fn)
+              for folder in folders]
+        # chekc if the file exists in any of the folders
+        for f in fps:
+            if os.path.exists(f):
+                fp = f
+                break
+        else:
+            print(f"{val_tuple[2]}-tables not found in any of the folders")
+            continue
+
+        # fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)  # this is the
         try:
             csv_data = pd.read_csv(fp, header=None)
         except FileNotFoundError as e:
@@ -226,7 +237,7 @@ def parse_other_tax_tables(inv, code_keys, folder: Path = None):
     return all_objs_data
 
 
-def go_tables(inv, code_keys, folder: Path = None):
+def go_tables(inv, code_keys, folders: list[Path] = None):
     """
     Parse GO summary files
     """
@@ -237,7 +248,17 @@ def go_tables(inv, code_keys, folder: Path = None):
 
         prefix = val_tuple[1]           # like DBB etc
         fn = f"{prefix}.merged.summary.{inv}"
-        fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)  # this is the final path
+        # fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)  # this is the final path
+        fps = [os.path.join(folder, f"{val_tuple[2]}-tables", fn)
+              for folder in folders]
+        # chekc if the file exists in any of the folders
+        for f in fps:
+            if os.path.exists(f):
+                fp = f
+                break
+        else:
+            print(f"{val_tuple[2]}-tables not found in any of the folders")
+            continue
         try:
             csv_data = pd.read_csv(fp, header=None)
         except FileNotFoundError as e:
@@ -257,10 +278,15 @@ def go_tables(inv, code_keys, folder: Path = None):
     return all_objs_data
 
 
-def main(project_dir):
+def main(project_dirs, out_dir=None):
     batch1 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-001/run-information-batch-001.csv"
     batch2 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-002/run-information-batch-002.csv"
-    OUT_PATH = os.path.join(project_dir, "combined_tables")
+    if out_dir is None:
+        OUT_PATH = os.path.join(os.getcwd(), "combined_tables")
+    else:
+        OUT_PATH = os.path.join(out_dir, "combined_tables")
+
+    logger.info(f"OUT_PATH: {OUT_PATH}")
     # tables_folder = os.path.join(project_dir, "results-tables")
 
     logger.info("creating code_keys")
@@ -277,13 +303,13 @@ def main(project_dir):
 
     logger.info(code_keys)
     all_data = {}
-    LSU_data = parse_local_inventory("LSU", code_keys, folder=project_dir)
-    SSU_data = parse_local_inventory("SSU", code_keys, folder=project_dir)
-    go_data = go_tables("go", code_keys, folder=project_dir)
-    go_slim_data = go_tables("go_slim", code_keys, folder=project_dir)
-    ips_data = parse_other_tax_tables("ips", code_keys, folder=project_dir)
-    ko_data = parse_other_tax_tables("ko", code_keys, folder=project_dir)
-    pfam_data = parse_other_tax_tables("pfam", code_keys, folder=project_dir)
+    LSU_data = parse_local_inventory("LSU", code_keys, folder=project_dirs)
+    SSU_data = parse_local_inventory("SSU", code_keys, folder=project_dirs)
+    go_data = go_tables("go", code_keys, folder=project_dirs)
+    go_slim_data = go_tables("go_slim", code_keys, folder=project_dirs)
+    ips_data = parse_other_tax_tables("ips", code_keys, folder=project_dirs)
+    ko_data = parse_other_tax_tables("ko", code_keys, folder=project_dirs)
+    pfam_data = parse_other_tax_tables("pfam", code_keys, folder=project_dirs)
     logger.info(f"Parsed {len(LSU_data)} rows from LSU data")
     logger.info(f"Parsed {len(SSU_data)} rows from SSU data")
     logger.info(f"Parsed {len(go_data)} rows from GO data")
@@ -308,7 +334,7 @@ def main(project_dir):
         os.makedirs(OUT_PATH)
     logger.info("SAVING PATh for the combined table.")
     logger.info(f"OUT_PATH: {OUT_PATH}")
-    logger.info(f"tables_folder: {project_dir}")
+    # logger.info(f"tables_folder: {project_dir}")
     for path, table in all_data.items():
         # logger.info("SAVING PATh for the combined table.")
         # logger.info(os.path.join(OUT_PATH, f"{path}.csv"))
@@ -330,11 +356,17 @@ if __name__ == "__main__":
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent(desc),
     )
+    parser.add_argument(
+        '-d','--dirs',
+        nargs='+',
+        help="Target directories where the all the extracted tables are organized per ref-code",
+    )
     (
         parser.add_argument(
-            "target_directory",
-            help="Target directory where the all the extracted tables are organized per ref-code",
+            '-o',
+            "--out_dir",
+            help="Saving table for the output",
         ),
     )
     args = parser.parse_args()
-    main(args.target_directory)
+    main(args.dirs, args.out_dir)
