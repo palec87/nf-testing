@@ -86,6 +86,29 @@ def extract_keys(data):
     # print(f"Extracted {len(d)} records from batch sheets")
     return d
 
+## method to merge tracker and shipments data
+def merge_tracker_metadata(df_tracker):
+    """
+    Combine all the data from the tracker and the shipment data in order to identify the 181 magical samplings
+    """
+    df = pd.read_csv(BATCH1_RUN_INFO_PATH)
+    df1 = pd.read_csv(BATCH2_RUN_INFO_PATH)
+    df = pd.concat([df, df1])
+    print(len(df))
+
+    # select only batch 1 and 2 from tracker data
+    df_tracker = df_tracker[df_tracker['batch'].isin(['001', '002'])]
+
+    # merge with tracker data on ref_code
+    df = pd.merge(df, df_tracker, on='ref_code', how='left')
+
+    # split the sequenced tables
+    df_discarded = df[df['lib_reads_seqd'].isnull()]
+    df1 = df[~df['lib_reads_seqd'].isnull()]
+
+    # deliver only filters and sediment samples, no blanks
+    df_to_deliver = df1[df1['sample_type'].isin(['filters', 'sediment'])].reset_index(drop=True)
+    return df_to_deliver, df_discarded
 
 # Uses code_keys dictionary from above
 def parse_taxonomy(taxonomy):
@@ -102,7 +125,7 @@ def parse_taxonomy(taxonomy):
     return classification
 
 
-def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folder: Path = None):
+def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folders: list[Path] = None):
     count = 0
     all_objs_data = []  # list of dicts, each a taxonomic entry
 
@@ -111,12 +134,23 @@ def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folder: Pa
         # For each of the 54 LSU inventories
         prefix = val_tuple[1]
         fn = f"{prefix}.merged_{inv}.fasta.mseq.tsv"
-        fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)
+        fps = [os.path.join(folder, f"{val_tuple[2]}-tables", fn)
+              for folder in folders]
+        # chekc if the file exists in any of the folders
+        for f in fps:
+            if os.path.exists(f):
+                fp = f
+                break
+        else:
+            print(f"{val_tuple[2]}-tables not found in any of the folders")
+            continue
+
+        # fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)
 
         ############ this will be eventually removed ################
-        lst = ["EMOBON_OSD74_Wa_21-tables", "EMOBON_VB_Wa_43-tables"]
-        if any(x in fp for x in lst):
-            logger.info(f'FULL path, {fp}, {val_tuple[2]}')
+        # lst = ["EMOBON_OSD74_Wa_21-tables", "EMOBON_VB_Wa_43-tables"]
+        # if any(x in fp for x in lst):
+        #     logger.info(f'FULL path, {fp}, {val_tuple[2]}')
         #############################################################
     
         try:
