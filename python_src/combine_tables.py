@@ -38,7 +38,10 @@ logging.basicConfig(format="\t%(levelname)s: %(message)s", level=logging.INFO)
 
 # Batch 1 has 80 records sent to squencing lab
 # Batch 2 has 108 records sent to squencing lab
-BATCH1AND2_TOTAL = 188
+# BATCH1AND2_TOTAL = 188
+
+# changed because blanks are removed
+BATCH1AND2_TOTAL = 181
 BATCH1_RUN_INFO_PATH = (
     "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/"
     "batch-001/run-information-batch-001.csv"
