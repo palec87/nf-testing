@@ -369,4 +369,6 @@ if __name__ == "__main__":
         ),
     )
     args = parser.parse_args()
+    print(args.dirs)
+    print(args.out_dir)
     main(args.dirs, args.out_dir)
