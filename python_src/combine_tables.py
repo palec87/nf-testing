@@ -88,9 +88,6 @@ def extract_keys(data):
 
 ## method to merge tracker and shipments data
 def merge_tracker_metadata(df_tracker):
-    """
-    Combine all the data from the tracker and the shipment data in order to identify the 181 magical samplings
-    """
     df = pd.read_csv(BATCH1_RUN_INFO_PATH)
     df1 = pd.read_csv(BATCH2_RUN_INFO_PATH)
     df = pd.concat([df, df1])
@@ -100,7 +97,7 @@ def merge_tracker_metadata(df_tracker):
     df_tracker = df_tracker[df_tracker['batch'].isin(['001', '002'])]
 
     # merge with tracker data on ref_code
-    df = pd.merge(df, df_tracker, on='ref_code', how='left')
+    df = pd.merge(df, df_tracker, on='ref_code', how='inner')
 
     # split the sequenced tables
     df_discarded = df[df['lib_reads_seqd'].isnull()]
@@ -108,6 +105,9 @@ def merge_tracker_metadata(df_tracker):
 
     # deliver only filters and sediment samples, no blanks
     df_to_deliver = df1[df1['sample_type'].isin(['filters', 'sediment'])].reset_index(drop=True)
+    #drop columns
+    df_to_deliver.drop(columns='reads_name_y', inplace=True)
+    df_to_deliver.rename(columns={'reads_name_x': 'reads_name'}, inplace=True)
     return df_to_deliver, df_discarded
 
 # Uses code_keys dictionary from above
@@ -279,8 +279,11 @@ def go_tables(inv, code_keys, folders: list[Path] = None):
 
 
 def main(project_dirs, out_dir=None):
-    batch1 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-001/run-information-batch-001.csv"
-    batch2 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-002/run-information-batch-002.csv"
+    # batch1 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-001/run-information-batch-001.csv"
+    # batch2 = "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/batch-002/run-information-batch-002.csv"
+    url_tracker = "https://raw.githubusercontent.com/emo-bon/momics-demos/refs/heads/main/wf0_landing_page/emobon_sequencing_master.csv"
+    df_tracker = pd.read_csv(url_tracker ,index_col=0)
+    df_to_deliver, df_discarded = merge_tracker_metadata(df_tracker)
     if out_dir is None:
         OUT_PATH = os.path.join(os.getcwd(), "combined_tables")
     else:
@@ -291,10 +294,12 @@ def main(project_dirs, out_dir=None):
 
     logger.info("creating code_keys")
     code_keys = {}
-    for batch in (batch1, batch2):
-        with urllib.request.urlopen(batch) as f:  # noqa: S310
-            data = pd.read_csv(f)  # CSV
-            code_keys.update(extract_keys(data))
+    # for batch in (batch1, batch2):
+    #     with urllib.request.urlopen(batch) as f:  # noqa: S310
+    #         data = pd.read_csv(f)  # CSV
+    #         code_keys.update(extract_keys(data))
+
+    code_keys.update(extract_keys(df_to_deliver))
 
     if len(code_keys) != BATCH1AND2_TOTAL:
         raise ValueError(f"Expected {BATCH1AND2_TOTAL} keys, got {len(code_keys)}")
