@@ -39,7 +39,14 @@ logging.basicConfig(format="\t%(levelname)s: %(message)s", level=logging.INFO)
 # Batch 1 has 80 records sent to squencing lab
 # Batch 2 has 108 records sent to squencing lab
 BATCH1AND2_TOTAL = 188
-
+BATCH1_RUN_INFO_PATH = (
+    "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/"
+    "batch-001/run-information-batch-001.csv"
+)
+BATCH2_RUN_INFO_PATH = (
+    "https://raw.githubusercontent.com/emo-bon/sequencing-data/main/shipment/"
+    "batch-002/run-information-batch-002.csv"
+)
 # Expected number of metaGOflow analyses in version 1 of the data release
 EXPECTED_ANALYSES = 54
 TAXONOMY_RANK_KEYS = {
