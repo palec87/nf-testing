@@ -301,15 +301,15 @@ def main(project_dirs, out_dir=None):
     else:
         logger.info(f"Extracted the expected {len(code_keys)} records from batch sheets")
 
-    logger.info(code_keys)
+    logger.info(f"I have following number of keys: {len(code_keys)}")
     all_data = {}
-    LSU_data = parse_local_inventory("LSU", code_keys, folder=project_dirs)
-    SSU_data = parse_local_inventory("SSU", code_keys, folder=project_dirs)
-    go_data = go_tables("go", code_keys, folder=project_dirs)
-    go_slim_data = go_tables("go_slim", code_keys, folder=project_dirs)
-    ips_data = parse_other_tax_tables("ips", code_keys, folder=project_dirs)
-    ko_data = parse_other_tax_tables("ko", code_keys, folder=project_dirs)
-    pfam_data = parse_other_tax_tables("pfam", code_keys, folder=project_dirs)
+    LSU_data = parse_local_inventory("LSU", code_keys, folders=project_dirs)
+    SSU_data = parse_local_inventory("SSU", code_keys, folders=project_dirs)
+    go_data = go_tables("go", code_keys, folders=project_dirs)
+    go_slim_data = go_tables("go_slim", code_keys, folders=project_dirs)
+    ips_data = parse_other_tax_tables("ips", code_keys, folders=project_dirs)
+    ko_data = parse_other_tax_tables("ko", code_keys, folders=project_dirs)
+    pfam_data = parse_other_tax_tables("pfam", code_keys, folders=project_dirs)
     logger.info(f"Parsed {len(LSU_data)} rows from LSU data")
     logger.info(f"Parsed {len(SSU_data)} rows from SSU data")
     logger.info(f"Parsed {len(go_data)} rows from GO data")
