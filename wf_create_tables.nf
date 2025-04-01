@@ -99,7 +99,11 @@ workflow {
                             .map { row -> file(row[0]) }
                             .view()
 
-    unzipArchive(python_unzip_script, ch_archives_root, ch_file_path) // Unzip archives
+    unzipArchive(
+        python_unzip_script,
+        ch_archives_root,
+        ch_file_path,
+        params.hcmr) // Unzip archives
     readYAML(python_dir, unzipArchive.out.archive_name, yaml_file) // Read YAML file
 
     ch_newArchive = readYAML.out.newArchiveName

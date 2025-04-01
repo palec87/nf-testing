@@ -8,13 +8,14 @@ process unzipArchive {
     path python_path
     path archives_root
     path file
+    val hcmr
 
     output:
     path 'prepared_archives/*', emit: archive_name
     
     script:
     """
-    python ${python_path} ${archives_root} ${file} -d ${params.hcmr ? '--hcmr' : ''}
+    python ${python_path} ${archives_root} ${file} -d ${hcmr ? '--hcmr' : ''}
     """
 }
 
