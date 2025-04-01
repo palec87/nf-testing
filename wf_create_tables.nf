@@ -14,6 +14,7 @@ include { mergeI5 } from './modules/merge_i5_chunks.nf'
 
 
 // list of files
+params.hcmr = false
 params.files = "inp_files.csv"
 params.folder_extracted_tables = "${projectDir}/results-hcmr"
 

@@ -14,6 +14,8 @@ process unzipArchive {
     
     script:
     """
-    python ${python_path} ${archives_root} ${file} -d --hcmr
+    python ${python_path} ${archives_root} ${file} -d ${params.hcmr ? '--hcmr' : ''}
     """
 }
+
+// python ${python_path} ${archives_root} ${file} -d --hcmr
