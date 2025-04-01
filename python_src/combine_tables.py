@@ -139,7 +139,7 @@ def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folders: l
     count = 0
     all_objs_data = []  # list of dicts, each a taxonomic entry
 
-    for _, val_tuple in code_keys.items():
+    for key, val_tuple in code_keys.items():
         all_sample_data = []
         # For each of the 54 LSU inventories
         prefix = val_tuple[1]
@@ -152,7 +152,7 @@ def parse_local_inventory(inv: str, code_keys: dict[tuple[str, str]], folders: l
                 fp = f
                 break
         else:
-            print(f"{val_tuple[2]}-tables not found in any of the folders")
+            print(f"{val_tuple[2]}-tables not found in any of the folders, look for {key, val_tuple}")
             continue
 
         # fp = os.path.join(folder, f"{val_tuple[2]}-tables", fn)
