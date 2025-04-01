@@ -1,0 +1,135 @@
+	INFO: OUT_PATH: /usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/combined_tables
+	INFO: creating code_keys
+	INFO: Extracted the expected 181 records from batch sheets
+	INFO: I have following number of keys: 181
+EMOBON_BPNS_So_13-tables not found in any of the folders
+EMOBON_BPNS_Wa_1-tables not found in any of the folders
+EMOBON_BPNS_Wa_2-tables not found in any of the folders
+EMOBON_EMT21_Wa_6-tables not found in any of the folders
+EMOBON_OSD74_Wa_1-tables not found in any of the folders
+EMOBON_RFormosa_Wa_1-tables not found in any of the folders
+EMOBON_RFormosa_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_18-tables not found in any of the folders
+EMOBON_ROSKOGO_So_16-tables not found in any of the folders
+EMOBON_ROSKOGO_So_17-tables not found in any of the folders
+	INFO: Found 171 inventories from LSU
+EMOBON_BPNS_So_13-tables not found in any of the folders
+EMOBON_BPNS_Wa_1-tables not found in any of the folders
+EMOBON_BPNS_Wa_2-tables not found in any of the folders
+EMOBON_EMT21_Wa_6-tables not found in any of the folders
+EMOBON_OSD74_Wa_1-tables not found in any of the folders
+EMOBON_RFormosa_Wa_1-tables not found in any of the folders
+EMOBON_RFormosa_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_18-tables not found in any of the folders
+EMOBON_ROSKOGO_So_16-tables not found in any of the folders
+EMOBON_ROSKOGO_So_17-tables not found in any of the folders
+	INFO: Found 171 inventories from SSU
+EMOBON_BPNS_So_13-tables not found in any of the folders
+EMOBON_AAOT_Wa_22-tables not found in any of the folders
+EMOBON_BPNS_Wa_1-tables not found in any of the folders
+EMOBON_BPNS_Wa_2-tables not found in any of the folders
+EMOBON_EMT21_Wa_6-tables not found in any of the folders
+EMOBON_IUIEilat_Wa_2-tables not found in any of the folders
+EMOBON_OSD74_Wa_1-tables not found in any of the folders
+EMOBON_PiEGetxo_Wa_2-tables not found in any of the folders
+EMOBON_RFormosa_Wa_1-tables not found in any of the folders
+EMOBON_RFormosa_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_1-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_18-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_13-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_14-tables not found in any of the folders
+EMOBON_VB_Wa_5-tables not found in any of the folders
+EMOBON_VB_Wa_42-tables not found in any of the folders
+EMOBON_ROSKOGO_So_16-tables not found in any of the folders
+EMOBON_ROSKOGO_So_17-tables not found in any of the folders
+Found 162 samples for go
+EMOBON_BPNS_So_13-tables not found in any of the folders
+EMOBON_AAOT_Wa_22-tables not found in any of the folders
+EMOBON_BPNS_Wa_1-tables not found in any of the folders
+EMOBON_BPNS_Wa_2-tables not found in any of the folders
+EMOBON_EMT21_Wa_6-tables not found in any of the folders
+EMOBON_IUIEilat_Wa_2-tables not found in any of the folders
+EMOBON_OSD74_Wa_1-tables not found in any of the folders
+EMOBON_PiEGetxo_Wa_2-tables not found in any of the folders
+EMOBON_RFormosa_Wa_1-tables not found in any of the folders
+EMOBON_RFormosa_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_1-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_18-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_13-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_14-tables not found in any of the folders
+EMOBON_VB_Wa_5-tables not found in any of the folders
+EMOBON_VB_Wa_42-tables not found in any of the folders
+EMOBON_ROSKOGO_So_16-tables not found in any of the folders
+EMOBON_ROSKOGO_So_17-tables not found in any of the folders
+Found 162 samples for go_slim
+EMOBON_BPNS_So_13-tables not found in any of the folders
+EMOBON_AAOT_Wa_22-tables not found in any of the folders
+EMOBON_BPNS_Wa_1-tables not found in any of the folders
+EMOBON_BPNS_Wa_2-tables not found in any of the folders
+EMOBON_EMT21_Wa_6-tables not found in any of the folders
+EMOBON_IUIEilat_Wa_2-tables not found in any of the folders
+EMOBON_OSD74_Wa_1-tables not found in any of the folders
+EMOBON_PiEGetxo_Wa_2-tables not found in any of the folders
+EMOBON_RFormosa_Wa_1-tables not found in any of the folders
+EMOBON_RFormosa_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_1-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_18-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_13-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_14-tables not found in any of the folders
+EMOBON_VB_Wa_5-tables not found in any of the folders
+EMOBON_VB_Wa_42-tables not found in any of the folders
+EMOBON_ROSKOGO_So_16-tables not found in any of the folders
+EMOBON_ROSKOGO_So_17-tables not found in any of the folders
+Found 162 samples for ips summary
+EMOBON_BPNS_So_13-tables not found in any of the folders
+EMOBON_AAOT_Wa_22-tables not found in any of the folders
+EMOBON_BPNS_Wa_1-tables not found in any of the folders
+EMOBON_BPNS_Wa_2-tables not found in any of the folders
+EMOBON_EMT21_Wa_6-tables not found in any of the folders
+EMOBON_IUIEilat_Wa_2-tables not found in any of the folders
+EMOBON_OSD74_Wa_1-tables not found in any of the folders
+EMOBON_PiEGetxo_Wa_2-tables not found in any of the folders
+EMOBON_RFormosa_Wa_1-tables not found in any of the folders
+EMOBON_RFormosa_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_1-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_18-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_13-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_14-tables not found in any of the folders
+EMOBON_VB_Wa_5-tables not found in any of the folders
+EMOBON_VB_Wa_42-tables not found in any of the folders
+EMOBON_ROSKOGO_So_16-tables not found in any of the folders
+EMOBON_ROSKOGO_So_17-tables not found in any of the folders
+Found 162 samples for ko summary
+EMOBON_BPNS_So_13-tables not found in any of the folders
+EMOBON_AAOT_Wa_22-tables not found in any of the folders
+EMOBON_BPNS_Wa_1-tables not found in any of the folders
+EMOBON_BPNS_Wa_2-tables not found in any of the folders
+EMOBON_EMT21_Wa_6-tables not found in any of the folders
+EMOBON_IUIEilat_Wa_2-tables not found in any of the folders
+EMOBON_OSD74_Wa_1-tables not found in any of the folders
+EMOBON_PiEGetxo_Wa_2-tables not found in any of the folders
+EMOBON_RFormosa_Wa_1-tables not found in any of the folders
+EMOBON_RFormosa_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_1-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_2-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_18-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_13-tables not found in any of the folders
+EMOBON_ROSKOGO_Wa_14-tables not found in any of the folders
+EMOBON_VB_Wa_5-tables not found in any of the folders
+EMOBON_VB_Wa_42-tables not found in any of the folders
+EMOBON_ROSKOGO_So_16-tables not found in any of the folders
+EMOBON_ROSKOGO_So_17-tables not found in any of the folders
+Found 162 samples for pfam summary
+	INFO: Parsed 139052 rows from LSU data
+	INFO: Parsed 104825 rows from SSU data
+	INFO: Parsed 326886 rows from GO data
+	INFO: Parsed 18792 rows from GO slim data
+	INFO: Parsed 1930167 rows from IPS data
+	INFO: Parsed 390590 rows from KEGG data
+	INFO: Parsed 1783483 rows from PFAM data
+	INFO: SAVING PATh for the combined table.
+	INFO: OUT_PATH: /usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/combined_tables

@@ -7,13 +7,13 @@ The pipeline does the following steps
 3. write a log if some of the files are missing.
 */
 
-// include { readYAML } from './modules/read_yaml.nf'
-// include { unzipArchive } from './modules/unzip_archive.nf'
-// include { mergeI5 } from './modules/merge_i5_chunks.nf'
+include { readYAML } from './modules/read_yaml.nf'
+include { unzipArchive } from './modules/unzip_archive.nf'
+include { mergeI5 } from './modules/merge_i5_chunks.nf'
 
 
 // list of files
-// params.files = "inp_files.csv"
+params.files = "inp_files.csv"
 params.folder_extracted_tables = "${projectDir}/results-hcmr"
 
 // setup for CCMAR data

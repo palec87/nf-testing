@@ -15,7 +15,7 @@ include { mergeI5 } from './modules/merge_i5_chunks.nf'
 
 // list of files
 params.files = "inp_files.csv"
-params.folder_extracted_tables = "${projectDir}/results-tables"
+params.folder_extracted_tables = "${projectDir}/results-hcmr"
 
 // setup for CCMAR data
 // params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data"  // archive folder redi
