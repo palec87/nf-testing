@@ -14,6 +14,7 @@
 // |   |   |-- DBB.merged_CDS.I5.tsv.chunks
 
 process mergeI5 {
+    errorStrategy 'ignore'
     conda '/usr/local/scratch/nf-metaGOflow/wf-test/nf-testing/conda.yaml'
     debug true
 
