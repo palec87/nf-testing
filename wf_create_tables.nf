@@ -22,7 +22,7 @@ params.folder_extracted_tables = "${projectDir}/results-hcmr"
 // params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/CCMAR-data"  // archive folder redi
 
 // setup for HCMR data
-params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/HCMR-data/data"  // archive folder redi
+params.archives_root = "/usr/local/scratch/metaGOflow-COMPLETED-results/Batch1and2/HCMR-data"  // archive folder redi
 
 
 // I think this is the solution for the renaming problems too, or????
