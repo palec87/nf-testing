@@ -92,7 +92,7 @@ def extract_keys(data):
             raise ValueError(f"Duplicate reads_name: {reads_name}")
         prefix = row["ref_code_seq"].split("_")[0]
 
-        d[reads_name] = (code, prefix, row['source_mat_id'])
+        d[reads_name] = (code, prefix, row['source_mat_id'], row['ref_code'])
     # print(f"Extracted {len(d)} records from batch sheets")
     return d
 
@@ -315,6 +315,11 @@ def main(project_dirs, out_dir=None):
         raise ValueError(f"Expected {BATCH1AND2_TOTAL} keys, got {len(code_keys)}")
     else:
         logger.info(f"Extracted the expected {len(code_keys)} records from batch sheets")
+
+    ref_code_list = [v[3] for k, v in code_keys.items()]
+    missing = df_to_deliver[~df_to_deliver['ref_code'].isin(ref_code_list)]
+    logger.info(f"Missing: {missing}")
+    assert len(missing) == 0, f"Missing {len(missing)} records in the tracker data"
 
     logger.info(f"I have following number of keys: {len(code_keys)}")
     all_data = {}
