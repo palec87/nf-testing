@@ -14,7 +14,7 @@ include { mergeI5 } from './modules/merge_i5_chunks.nf'
 
 
 // list of files
-params.hcmr = false  // this flag is basically for zip (true) or tar.bz2 (false)
+params.hcmr = true  // this flag is basically for zip (true) or tar.bz2 (false)
 params.files = "inp_files.csv"
 params.folder_extracted_tables = "${projectDir}/results-hcmr"
 
